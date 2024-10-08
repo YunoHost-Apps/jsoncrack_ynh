@@ -21,7 +21,7 @@ ynh_script_progression "Setting up source files..."
 
 #~ ynh_setup_source --dest_dir="$install_dir"
 
-ynh_exec_as "$app" git clone https://github.com/AykutSarac/jsoncrack.com.git "$install_dir" --quiet
+ynh_exec_as_app git clone https://github.com/AykutSarac/jsoncrack.com.git "$install_dir" --quiet
 
 chown -R "$app:www-data" "$install_dir"
 
