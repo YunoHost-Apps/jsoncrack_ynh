@@ -7,9 +7,10 @@ Type=simple
 User=__APP__
 Group=__APP__
 WorkingDirectory=__INSTALL_DIR__/
-ExecStart=__INSTALL_DIR__/script
-StandardOutput=append:/var/log/__APP__/__APP__.log
-StandardError=inherit
+Environment="NODE_ENV=production"
+Environment="PATH=__PATH_WITH_NODEJS__"
+ExecStart=__NODEJS_DIR__/pnpm start
+Restart=always
 
 ### Depending on specificities of your service/app, you may need to tweak these
 ### .. but this should be a good baseline
