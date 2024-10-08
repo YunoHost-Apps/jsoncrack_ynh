@@ -28,13 +28,14 @@ chown -R "$app:www-data" "$install_dir"
 #=================================================
 # APP BUILD
 #=================================================
-ynh_script_progression "Building application..."
+ynh_script_progression "Building application (be patient)..."
 
 pushd $install_dir
 	ynh_hide_warnings npm install pnpm -g
+	ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm install
 	ynh_hide_warnings ynh_exec_as_app pnpm build
-	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd 
+	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd
 popd
 
 #=================================================
