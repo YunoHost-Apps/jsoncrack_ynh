@@ -15,13 +15,30 @@ ynh_script_progression "Installing dependencies..."
 ynh_nodejs_install
 
 #=================================================
+# ADD SWAP IF NEEDED
+#=================================================
+ynh_script_progression "Adding swap if needed..."
+
+total_memory=$(ynh_get_ram --total)
+swap_needed=0
+
+if [ $total_memory -lt $memory_needed ]; then
+	# Need a minimum of ??Go of memory
+	swap_needed=$(($memory_needed - $total_memory))
+fi
+
+ynh_script_progression "Adding $swap_needed Mo to swap..."
+
+ynh_add_swap --size=$swap_needed
+
+#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression "Setting up source files..."
 
-#~ ynh_setup_source --dest_dir="$install_dir"
+ynh_setup_source --dest_dir="$install_dir"
 
-ynh_exec_as_app git clone https://github.com/AykutSarac/jsoncrack.com.git "$install_dir" --quiet
+ynh_replace --match_string="^.*GoogleAnalytics.*$" --replace_string="" --target_file="$install_dir/src/pages/_app.tsx" #also need to remove gaEvent() & deps https://github.com/search?q=repo%3AAykutSarac%2Fjsoncrack.com%20nextjs-google-analytics&type=code
 
 chown -R "$app:www-data" "$install_dir"
 
@@ -31,10 +48,10 @@ chown -R "$app:www-data" "$install_dir"
 ynh_script_progression "Building application (be patient)..."
 
 pushd $install_dir
-        corepack enable pnpm
-        corepack use pnpm@latest
-        ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false
-	#~ ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
+    corepack enable pnpm
+    corepack use pnpm@latest
+    ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
+	ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm build
 	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd
 popd
