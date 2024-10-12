@@ -31,9 +31,7 @@ chown -R "$app:www-data" "$install_dir"
 ynh_script_progression "Building application (be patient)..."
 
 pushd $install_dir
-	export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 	corepack enable pnpm
-	#~ corepack use pnpm@latest
 	ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm install --prod
 	#~ ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm build
