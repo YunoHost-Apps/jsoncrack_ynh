@@ -32,8 +32,13 @@ ynh_script_progression "Building application (be patient)..."
 
 pushd $install_dir
 	corepack enable pnpm
+<<<<<<< HEAD
 	corepack use pnpm@latest
 	ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm install --prod
+=======
+	#~ corepack use pnpm@latest
+	ynh_hide_warnings ynh_exec_as_app pnpm install --prod
+>>>>>>> e2bf9ba (fix install 4)
 	#~ ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm build
 	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd
