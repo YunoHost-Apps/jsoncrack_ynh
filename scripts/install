@@ -38,10 +38,26 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
+# Remove Google Analytics (user tracking)
+sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
 sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
 sed -i '/IS_PROD/d' "$install_dir/src/pages/_app.tsx"
 cat -s "$install_dir/src/pages/_app.tsx" | tee "$install_dir/src/pages/_app.tsx" > /dev/null # Removes double newline characters
+gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' # Remove lines containing 'gaEvent' for files located in src/*
+sed -i '/Analytics/,+5d' "$install_dir/src/data/terms.json"
+
+# Remove Sentry (error tracking)
+sed -i '/sentry/d' "$install_dir/package.json"
+sed -i '/@sentry/d' "$install_dir/next.config.js"
+sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
+sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
+sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
+rm "$install_dir/sentry.client.config.ts"
+rm "$install_dir/sentry.edge.config.ts"
+
 #ynh_replace --match="^.*GoogleAnalytics.*$" --replace="" --file="$install_dir/src/pages/_app.tsx" #also need to remove gaEvent() & deps https://github.com/search?q=repo%3AAykutSarac%2Fjsoncrack.com%20nextjs-google-analytics&type=code
+cp "$install_dir/package.json" "$install_dir/src/package.json" 
+cp "$install_dir/pnpm-lock.yaml" "$install_dir/src/pnpm-lock.yaml" 
 
 chown -R "$app:www-data" "$install_dir"
 
@@ -50,7 +66,7 @@ chown -R "$app:www-data" "$install_dir"
 #=================================================
 ynh_script_progression "Building application (be patient)..."
 
-pushd $install_dir
+pushd "$install_dir/src"
     corepack enable
     ynh_exec_as_app corepack enable pnpm
     ynh_exec_as_app corepack use pnpm@latest
