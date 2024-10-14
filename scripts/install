@@ -38,8 +38,8 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
-sed -i 's/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
-sed -i 's/IS_PROD/d' "$install_dir/src/pages/_app.tsx"
+sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
+sed -i '/IS_PROD/d' "$install_dir/src/pages/_app.tsx"
 #ynh_replace --match="^.*GoogleAnalytics.*$" --replace="" --file="$install_dir/src/pages/_app.tsx" #also need to remove gaEvent() & deps https://github.com/search?q=repo%3AAykutSarac%2Fjsoncrack.com%20nextjs-google-analytics&type=code
 
 chown -R "$app:www-data" "$install_dir"
