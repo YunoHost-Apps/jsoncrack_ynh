@@ -46,14 +46,18 @@ cat -s "$install_dir/src/pages/_app.tsx" | tee "$install_dir/src/pages/_app.tsx"
 gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' # Remove lines containing 'gaEvent' for files located in src/*
 sed -i '/Analytics/,+5d' "$install_dir/src/data/terms.json"
 
-# Remove Sentry (error tracking)
-sed -i '/sentry/d' "$install_dir/package.json"
-sed -i '/@sentry/d' "$install_dir/next.config.js"
-sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
-sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
+# Disable Sentry (error tracking linked to the app's official instance)
+ynh_replace --match="(process.*\"" --replace="false" --file="$install_dir/sentry.client.config.ts"
 sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
-rm "$install_dir/sentry.client.config.ts"
-rm "$install_dir/sentry.edge.config.ts"
+
+#~ # Remove Sentry (error tracking)
+#~ sed -i '/sentry/d' "$install_dir/package.json"
+#~ sed -i '/@sentry/d' "$install_dir/next.config.js"
+#~ sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
+#~ sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
+#~ sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
+#~ rm "$install_dir/sentry.client.config.ts"
+#~ rm "$install_dir/sentry.edge.config.ts"
 
 #ynh_replace --match="^.*GoogleAnalytics.*$" --replace="" --file="$install_dir/src/pages/_app.tsx" #also need to remove gaEvent() & deps https://github.com/search?q=repo%3AAykutSarac%2Fjsoncrack.com%20nextjs-google-analytics&type=code
 cp "$install_dir/package.json" "$install_dir/src/package.json" 
@@ -71,6 +75,7 @@ pushd "$install_dir/src"
     ynh_exec_as_app corepack enable pnpm
     ynh_exec_as_app corepack use pnpm@latest
     ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
+    cp "$install_dir/." "$install_dir/src/"
 	ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm build
 	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd
