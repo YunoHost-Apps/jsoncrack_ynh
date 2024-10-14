@@ -75,8 +75,9 @@ pushd "$install_dir/src"
     ynh_exec_as_app corepack enable pnpm
     ynh_exec_as_app corepack use pnpm@latest
     ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
-    #cp -r ../!(src) . # copy all parents files and folder from $install_dir to $install_dir/src except /src
-    rsync -av "$install_dir/" "$install_dir/src/" --exclude="src" # copy all parents files and folder from $install_dir to $install_dir/src except /src
+    shopt -s extglob # activate extglob for the shell so allow !() pattern in next command 
+    cp -r ../!(src) . # copy all parents files and folder from $install_dir to $install_dir/src except /src
+    #rsync -av "$install_dir/" "$install_dir/src/" --exclude="src" # copy all parents files and folder from $install_dir to $install_dir/src except /src
 	ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm build
 	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd
