@@ -51,6 +51,7 @@ ram.runtime = "50M"
         url = "https://github.com/AykutSarac/jsoncrack.com/archive/refs/tags/v3.2.0.zip"
         sha256 = "4a73b01136819964e709da8fb8f653d93284848ef38f3b4e96c041a9a55486b4"
         #prefetch = false
+        
         autoupdate.strategy = "latest_github_commit"
 
     [resources.system_user]
