@@ -51,6 +51,7 @@ chown -R "$app:www-data" "$install_dir"
 ynh_script_progression "Building application (be patient)..."
 
 pushd $install_dir
+    corepack enable
     ynh_exec_as_app corepack enable pnpm
     ynh_exec_as_app corepack use pnpm@latest
     ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
