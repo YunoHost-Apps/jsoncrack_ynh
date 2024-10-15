@@ -69,6 +69,8 @@ ynh_script_progression "Adding $app's configuration files..."
     sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
     sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
     ynh_replace --match=" onClick={() => gaEvent(\"show_tools_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ToolsMenu.tsx" # Delete part of line containing 'gaEvent'
+    ynh_replace --match=" onClick={() => gaEvent(\"show_view_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ViewMenu.tsx" 	# Delete part of line containing 'gaEvent'
+    ynh_replace --match=" onClick={() => gaEvent(\"show_zoom_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ZoomMenu.tsx" 	# Delete part of line containing 'gaEvent'
     gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                                     # Delete lines containing 'gaEvent' for files located in src/*
 
     # Disable Sentry (error tracking linked to the app's official instance)
@@ -108,6 +110,7 @@ pushd "$install_dir/src"
     chown -R "$app:www-data" .
     rm ../.eslintrc.json
     ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
+    ynh_hide_warnings ynh_exec_as_app pnpm lint:fix
     ynh_hide_warnings ynh_exec_as_app pnpm build
 popd
 
