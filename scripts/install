@@ -103,6 +103,7 @@ pushd "$install_dir/src"
     ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false
     #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
     for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
+    chown -R "$app:www-data" .
     ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     ynh_hide_warnings ynh_exec_as_app pnpm build
 popd
