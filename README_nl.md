@@ -29,6 +29,7 @@ This is a dummy description of this app features
 
 ## Documentatie en bronnen
 
+- Officiele gebruikersdocumentatie: <https://jsoncrack.com/docs>
 - Upstream app codedepot: <https://github.com/AykutSarac/jsoncrack.com>
 - YunoHost-store: <https://apps.yunohost.org/app/jsoncrack>
 - Meld een bug: <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>

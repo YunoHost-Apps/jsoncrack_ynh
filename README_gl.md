@@ -29,6 +29,7 @@ This is a dummy description of this app features
 
 ## Documentación e recursos
 
+- Documentación oficial para usuarias: <https://jsoncrack.com/docs>
 - Repositorio de orixe do código: <https://github.com/AykutSarac/jsoncrack.com>
 - Tenda YunoHost: <https://apps.yunohost.org/app/jsoncrack>
 - Informar dun problema: <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>
