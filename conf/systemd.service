@@ -1,15 +1,14 @@
 [Unit]
-Description=Small description of the service
+Description=JSON Crack
 After=network.target
 
 [Service]
 Type=simple
 User=__APP__
 Group=__APP__
+EnvironmentFile=__INSTALL_DIR__/.env
 WorkingDirectory=__INSTALL_DIR__/
-ExecStart=__INSTALL_DIR__/script
-StandardOutput=append:/var/log/__APP__/__APP__.log
-StandardError=inherit
+ExecStart=__YNH_NPM__ next start -p __PORT__
 
 ### Depending on specificities of your service/app, you may need to tweak these
 ### .. but this should be a good baseline

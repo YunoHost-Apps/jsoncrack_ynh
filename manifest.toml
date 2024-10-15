@@ -14,6 +14,7 @@ license = "LicenseRef-json-crack-license"
 demo = "https://jsoncrack.com/editor"
 code = "https://github.com/AykutSarac/jsoncrack.com"
 fund = "https://github.com/sponsors/AykutSarac"
+userdoc = "https://jsoncrack.com/docs"
 
 [antifeatures]
 not-totally-free-upstream.en = "Free for non-commercial use only"

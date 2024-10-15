@@ -38,30 +38,56 @@ ynh_script_progression "Setting up source files..."
 
 ynh_setup_source --dest_dir="$install_dir"
 
-# Remove Google Analytics (user tracking)
-sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
-sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
-sed -i '/IS_PROD/d' "$install_dir/src/pages/_app.tsx"
-cat -s "$install_dir/src/pages/_app.tsx" | tee "$install_dir/src/pages/_app.tsx" > /dev/null # Removes double newline characters
-gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' # Remove lines containing 'gaEvent' for files located in src/*
-sed -i '/Analytics/,+5d' "$install_dir/src/data/terms.json"
+#=================================================
+# APP INITIAL CONFIGURATION
+#=================================================
 
-# Disable Sentry (error tracking linked to the app's official instance)
-ynh_replace --match="(process.*\"" --replace="false" --file="$install_dir/sentry.client.config.ts"
-sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
+# Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
+	# Remove premium 
+	ynh_add_config --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx" #remove calls for premium and signup page   
+	ynh_add_config --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx" #remove listed premium options
+	ynh_add_config --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx" #remove listed premium options
+	sed -i '/<ExternalMode \/>/d' "$install_dir/src/pages/editor.tsx" #remove call for premium when executed not from official domain
+	sed -i '/<NotSupported \/>/d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx" #remove call for premium when reaching a graph limitation
+	
+	# SEO
+	ynh_add_config --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
+	ynh_add_config --template="robot.txt" --destination="$install_dir/public/robot.txt"
+	ynh_replace --match="https://jsoncrack.com" --replace="https://$domain$path" --file="$install_dir/src/constants/seo.ts" # image Asset URL	
+	ynh_replace --match="https://jsoncrack.com/editor" --replace="https://$domain$path/editor" --file="$install_dir/src/pages/editor.tsx" # cannonical URL	
 
-#~ # Remove Sentry (error tracking)
-#~ sed -i '/sentry/d' "$install_dir/package.json"
-#~ sed -i '/@sentry/d' "$install_dir/next.config.js"
-#~ sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
-#~ sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
-#~ sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
-#~ rm "$install_dir/sentry.client.config.ts"
-#~ rm "$install_dir/sentry.edge.config.ts"
+	# Fix page titles
+	ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx"
+	ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx"
+	
+	# Adapt text for YNH context
+	ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx" # Default download filename  
+	ynh_replace --match=" Don&apos;t worry, our development team was" --replace="" --file="$install_dir/src/pages/_error.tsx" # remove untrue speech with Sentry disabled	
+	ynh_replace --match="already notified. " --replace="" --file="$install_dir/src/pages/_error.tsx" # remove untrue speech with Sentry disabled	
+	
+	# Remove Google Analytics (user tracking)
+	sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
+	sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
+	gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' # Delete lines containing 'gaEvent' for files located in src/*
 
-#ynh_replace --match="^.*GoogleAnalytics.*$" --replace="" --file="$install_dir/src/pages/_app.tsx" #also need to remove gaEvent() & deps https://github.com/search?q=repo%3AAykutSarac%2Fjsoncrack.com%20nextjs-google-analytics&type=code
+	# Disable Sentry (error tracking linked to the app's official instance)
+	ynh_add_config --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
+
+	#~ # Remove Sentry (error tracking)
+	#~ sed -i '/sentry/d' "$install_dir/package.json"
+	#~ sed -i '/@sentry/d' "$install_dir/next.config.js"
+	#~ sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
+	#~ sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
+	#~ sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
+	#~ rm "$install_dir/sentry.client.config.ts"
+	#~ rm "$install_dir/sentry.edge.config.ts"
+
+# Copy node package files in build directory 
 cp "$install_dir/package.json" "$install_dir/src/package.json" 
 cp "$install_dir/pnpm-lock.yaml" "$install_dir/src/pnpm-lock.yaml" 
+
+# Overwrite upstream's environement variables
+ynh_add_config --template=".env" --destination="$install_dir/.env"
 
 chown -R "$app:www-data" "$install_dir"
 
@@ -78,7 +104,6 @@ pushd "$install_dir/src"
 	for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
 	ynh_hide_warnings ynh_exec_as_app pnpm exec next telemetry disable
 	ynh_hide_warnings ynh_exec_as_app pnpm build
-	# ynh_hide_warnings ynh_exec_as_app pnpm start # to be added via systemd
 popd
 
 #=================================================
@@ -86,137 +111,27 @@ popd
 #=================================================
 ynh_script_progression "Adding $app's configuration files..."
 
-### You can add specific configuration files.
-###
-### Typically, put your template conf file in ../conf/your_config_file
-### The template may contain strings such as __FOO__ or __FOO_BAR__,
-### which will automatically be replaced by the values of $foo and $foo_bar
-###
-### ynh_config_add will also keep track of the config file's checksum,
-### which later during upgrade may allow to automatically backup the config file
-### if it's found that the file was manually modified
-###
-### Check the documentation of `ynh_config_add` for more info.
-
-#~ ynh_config_add --template="some_config_file" --destination="$install_dir/some_config_file"
-
-# FIXME: this should be handled by the core in the future
-### You may need to use chmod 600 instead of 400,
-### for example if the app is expected to be able to modify its own config
-#~ chmod 400 "$install_dir/some_config_file"
-#~ chown "$app:$app" "$install_dir/some_config_file"
-
-### For more complex cases where you want to replace stuff using regexes,
-### you shoud rely on ynh_replace (which is basically a wrapper for sed)
-### When doing so, you also need to manually call ynh_store_file_checksum
-###
-### ynh_replace --match="match_string" --replace="replace_string" --file="$install_dir/some_config_file"
-### ynh_store_file_checksum "$install_dir/some_config_file"
-
 #=================================================
 # SYSTEM CONFIGURATION
 #=================================================
 ynh_script_progression "Adding system configurations related to $app..."
 
-### `ynh_config_add_phpfpm` is used to set up a PHP config.
-### You can remove it if your app doesn't use PHP.
-### `ynh_config_add_phpfpm` will use the files conf/extra_php-fpm.conf
-### If you're not using these lines:
-###   - You can remove these files in conf/.
-###   - Remove the section "BACKUP THE PHP-FPM CONFIGURATION" in the backup script
-###   - Remove also the section "REMOVE PHP-FPM CONFIGURATION" in the remove script
-###   - As well as the section "RESTORE THE PHP-FPM CONFIGURATION" in the restore script
-###     with the reload at the end of the script.
-###   - And the section "PHP-FPM CONFIGURATION" in the upgrade script
-
-# Create a PHP-FPM config (with conf/extra_php-fpm.conf being appended to it)
-#~ ynh_config_add_phpfpm
-
 # Create a dedicated NGINX config using the conf/nginx.conf template
 ynh_config_add_nginx
 
-### `ynh_config_add_systemd` is used to configure a systemd script for an app.
-### It can be used for apps that use sysvinit (with adaptation) or systemd.
-### Have a look at the app to be sure this app needs a systemd script.
-### `ynh_config_add_systemd` will use the file conf/systemd.service
-### If you're not using these lines:
-###   - You can remove those files in conf/.
-###   - Remove the section "BACKUP SYSTEMD" in the backup script
-###   - Remove also the section "STOP AND REMOVE SERVICE" in the remove script
-###   - As well as the section "RESTORE SYSTEMD" in the restore script
-###   - And the section "SETUP SYSTEMD" in the upgrade script
-
 # Create a dedicated systemd config
-#~ ynh_config_add_systemd
+ynh_config_add_systemd
 
-### `yunohost service add` integrates a service in YunoHost. It then gets
-### displayed in the admin interface and through the others `yunohost service` commands.
-### (N.B.: this line only makes sense if the app adds a service to the system!)
-### If you're not using these lines:
-###   - You can remove these files in conf/.
-###   - Remove the section "REMOVE SERVICE INTEGRATION IN YUNOHOST" in the remove script
-###   - As well as the section "INTEGRATE SERVICE IN YUNOHOST" in the restore script
-###   - And the section "INTEGRATE SERVICE IN YUNOHOST" in the upgrade script
-
-### Additional options starting with 3.8:
-###
-### --needs_exposed_ports "$port" a list of ports that needs to be publicly exposed
-###                               which will then be checked by YunoHost's diagnosis system
-###                               (N.B. DO NOT USE THIS if the port is only internal!!!)
-###
-### --test_status "some command"  a custom command to check the status of the service
-###                               (only relevant if 'systemctl status' doesn't do a good job)
-###
-### --test_conf "some command"    some command similar to "nginx -t" that validates the conf of the service
-###
-### Re-calling 'yunohost service add' during the upgrade script is the right way
-### to proceed if you later realize that you need to enable some flags that
-### weren't enabled on old installs (be careful it'll override the existing
-### service though so you should re-provide all relevant flags when doing so)
-#~ yunohost service add "$app" --description="A short description of the app" --log="/var/log/$app/$app.log"
-
-### `ynh_config_add_logrotate` is used to configure a logrotate configuration for the logs of this app.
-### Use this helper only if there is effectively a log file for this app.
-### If you're not using this helper:
-###   - Remove the section "BACKUP LOGROTATE" in the backup script
-###   - Remove also the section "REMOVE LOGROTATE CONFIGURATION" in the remove script
-###   - As well as the section "RESTORE THE LOGROTATE CONFIGURATION" in the restore script
-###   - And the section "SETUP LOGROTATE" in the upgrade script
-
-# Use logrotate to manage application logfile(s)
-#~ ynh_config_add_logrotate
-
-# Create a dedicated Fail2Ban config
-#~ ynh_config_add_fail2ban --logpath="/var/log/nginx/${domain}-error.log" --failregex="Regex to match into the log for a failed login"
-
-#=================================================
-# SETUP APPLICATION WITH CURL
-#=================================================
-
-### Use these lines only if the app installation needs to be finalized through
-### web forms. We generally don't want to ask the final user,
-### so we're going to use curl to automatically fill the fields and submit the
-### forms.
-
-# Installation with curl
-#~ ynh_script_progression "Finalizing installation..."
-#~ ynh_local_curl "/INSTALL_PATH" "key1=value1" "key2=value2" "key3=value3"
+# Integrate service in YunoHost
+yunohost service add "$app" --description="Visualization application that transforms various data formats, such as JSON, YAML, XML, CSV and more, into interactive graphs" --log="/var/log/$app/$app.log"
 
 #=================================================
 # START SYSTEMD SERVICE
 #=================================================
-#~ ynh_script_progression "Starting $app's systemd service..."
-
-### `ynh_systemctl` is used to start a systemd service for an app.
-### Only needed if you have configure a systemd service
-### If you're not using these lines:
-###   - Remove the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the backup script
-###   - As well as the section "START SYSTEMD SERVICE" in the restore script
-###   - As well as the section"STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the upgrade script
-###   - And the section "STOP SYSTEMD SERVICE" and "START SYSTEMD SERVICE" in the change_url script
+ynh_script_progression "Starting $app's systemd service..."
 
 # Start a systemd service
-#~ ynh_systemctl --service="$app" --action="start"
+ynh_systemctl --service="$app" --action="start"
 
 #=================================================
 # END OF SCRIPT
