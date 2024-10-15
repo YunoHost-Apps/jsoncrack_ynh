@@ -98,6 +98,7 @@ ynh_script_progression "Building application (be patient)..."
 
 pushd "$install_dir/src"
     corepack enable
+    ynh_exec_as_app export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
     ynh_exec_as_app corepack enable pnpm
     ynh_exec_as_app corepack use pnpm@latest
     ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false
