@@ -68,7 +68,8 @@ ynh_script_progression "Adding $app's configuration files..."
     # Remove Google Analytics (user tracking)
     sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
     sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
-    gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' # Delete lines containing 'gaEvent' for files located in src/*
+    ynh_replace --match=" onClick={() => gaEvent(\"show_tools_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar" # Delete part of line containing 'gaEvent' 
+    gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' 					  # Delete lines containing 'gaEvent' for files located in src/*
 
     # Disable Sentry (error tracking linked to the app's official instance)
     ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
