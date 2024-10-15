@@ -30,7 +30,6 @@ ynh_script_progression "Adding $swap_needed Mo to swap..."
 
 ynh_add_swap --size=$swap_needed
 
-y
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
