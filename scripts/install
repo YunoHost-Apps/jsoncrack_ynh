@@ -44,15 +44,15 @@ ynh_script_progression "Adding $app's configuration files..."
 
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Remove premium 
-    ynh_add_config --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"             #remove calls for premium and signup page   
-    ynh_add_config --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx" #remove listed premium options
-    ynh_add_config --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx" #remove listed premium options
+    ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"             #remove calls for premium and signup page   
+    ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx" #remove listed premium options
+    ynh_config_add --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx" #remove listed premium options
     sed -i '/<ExternalMode \/>/d' "$install_dir/src/pages/editor.tsx"                                               #remove call for premium when executed not from official domain
     sed -i '/<NotSupported \/>/d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx"         #remove call for premium when reaching a graph limitation
     
     # SEO
-    ynh_add_config --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
-    ynh_add_config --template="robot.txt" --destination="$install_dir/public/robot.txt"
+    ynh_config_add --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
+    ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
     ynh_replace --match="https://jsoncrack.com" --replace="https://$domain$path" --file="$install_dir/src/constants/seo.ts"               # Change asset URL    
     ynh_replace --match="https://jsoncrack.com/editor" --replace="https://$domain$path/editor" --file="$install_dir/src/pages/editor.tsx" # Change cannonical URL   
 
@@ -71,7 +71,7 @@ ynh_script_progression "Adding $app's configuration files..."
     gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d' # Delete lines containing 'gaEvent' for files located in src/*
 
     # Disable Sentry (error tracking linked to the app's official instance)
-    ynh_add_config --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
+    ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
 
     #~ # Remove Sentry (error tracking)
     #~ sed -i '/sentry/d' "$install_dir/package.json"
@@ -87,7 +87,7 @@ cp "$install_dir/package.json" "$install_dir/src/package.json"
 cp "$install_dir/pnpm-lock.yaml" "$install_dir/src/pnpm-lock.yaml" 
 
 # Overwrite upstream's environement variables
-ynh_add_config --template=".env" --destination="$install_dir/.env"
+ynh_config_add --template=".env" --destination="$install_dir/.env"
 
 chown -R "$app:www-data" "$install_dir"
 
