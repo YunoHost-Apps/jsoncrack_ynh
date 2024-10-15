@@ -99,9 +99,9 @@ ynh_script_progression "Building application (be patient)..."
 pushd "$install_dir/src"
     corepack enable
     export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+    ynh_exec_as_app echo $COREPACK_ENABLE_DOWNLOAD_PROMPT
     ynh_exec_as_app corepack enable pnpm
     ynh_exec_as_app corepack use pnpm@latest
-    ynh_exec_as_app echo $COREPACK_ENABLE_DOWNLOAD_PROMPT
     ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false
     #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
     for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
