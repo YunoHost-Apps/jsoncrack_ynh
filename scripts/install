@@ -44,7 +44,7 @@ ynh_script_progression "Adding $app's configuration files..."
 
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Fix upstream typo
-    ynh_replace --match="eslint --fix src & prettier --write" --replace="eslint --fix src && prettier --write" --file="$install_dir/package.json" 
+    ynh_replace --match="eslint --fix src & prettier --write" --replace="eslint \-\-fix src \&\& prettier \-\-write" --file="$install_dir/package.json" 
     
     # Remove premium 
     ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      #remove calls for premium and signup page   
@@ -109,7 +109,7 @@ pushd "$install_dir/src"
     ynh_exec_as_app corepack use pnpm@latest
     ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false
     #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
-    tar -cf parent.tar ../ && tar -xf parent.tar
+    ynh_hide_warnings ynh_exec_as_app tar -cf parent.tar ../ && tar -xf parent.tar
     #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
     chown -R "$app:www-data" .
     rm ../.eslintrc.json
