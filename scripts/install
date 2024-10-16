@@ -43,8 +43,9 @@ ynh_setup_source --dest_dir="$install_dir"
 ynh_script_progression "Adding $app's configuration files..."
 
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    # Fix upstream typo
+    # Fix upstream issues
     ynh_replace --match="eslint --fix src & prettier --write" --replace="eslint \-\-fix src \&\& prettier \-\-write" --file="$install_dir/package.json" 
+    ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
     
     # Remove premium 
     ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
