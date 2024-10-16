@@ -65,9 +65,9 @@ ynh_script_progression "Adding $app's configuration files..."
     ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx"
     
     # Adapt text for YNH context
-    ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx"  # Default download filename  
-    ynh_replace --match=" Don&apos;t worry, our development team was\n\w*" --replace="" --file="$install_dir/src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
-    ynh_replace --match="already notified. " --replace="" --file="$install_dir/src/pages/_error.tsx"                                # Delete deceptive speech now Sentry is going to be disabled 
+    ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
+    sed -i '/already notified/d' "$install_dir/src/pages/_error.tsx"                                                                                  # Delete deceptive speech now Sentry is going to be disabled 
+    ynh_replace --match="Don&apos;t worry, our development team was" --replace="Try refreshing the page." --file="$install_dir/src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
     
     # Remove Google Analytics (user tracking)
     sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
