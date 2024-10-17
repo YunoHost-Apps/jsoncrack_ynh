@@ -45,7 +45,9 @@ ynh_script_progression "Adding $app's configuration files..."
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Fix upstream issues
     sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
-    ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
+    sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
+    #~ ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
+    #~ ynh_replace --match="require(\"reaflow" --replace="const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
     ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx" # Page title
     ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx" # Page title
     #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
