@@ -29,6 +29,7 @@ This is a dummy description of this app features
 
 ## 文档与资源
 
+- 官方用户文档： <https://jsoncrack.com/docs>
 - 上游应用代码库： <https://github.com/AykutSarac/jsoncrack.com>
 - YunoHost 商店： <https://apps.yunohost.org/app/jsoncrack>
 - 报告 bug： <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>

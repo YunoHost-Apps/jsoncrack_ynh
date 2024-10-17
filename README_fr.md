@@ -29,6 +29,7 @@ Ceci est une fausse description des fonctionalités de l'app
 
 ## Documentations et ressources
 
+- Documentation officielle utilisateur : <https://jsoncrack.com/docs>
 - Dépôt de code officiel de l’app : <https://github.com/AykutSarac/jsoncrack.com>
 - YunoHost Store : <https://apps.yunohost.org/app/jsoncrack>
 - Signaler un bug : <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>

@@ -1,0 +1,6 @@
+ https://__DOMAIN____PATH__
+ https://__DOMAIN____PATH__/editor
+ https://__DOMAIN____PATH__/docs
+ https://__DOMAIN____PATH__/widget
+ https://__DOMAIN____PATH__/legal/terms
+ https://__DOMAIN____PATH__/legal/privacy
