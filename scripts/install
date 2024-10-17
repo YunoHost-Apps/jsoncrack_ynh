@@ -45,8 +45,14 @@ ynh_script_progression "Adding $app's configuration files..."
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Fix upstream issues
     ynh_replace --match="eslint --fix src & prettier --write" --replace="eslint \-\-fix src \&\& prettier \-\-write" --file="$install_dir/package.json" 
+    sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
     ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
-    
+    ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx" # Page title
+    ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx" # Page title
+    #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
+		#ssr:false 
+	#});
+	
     # Remove premium 
     ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
     ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx"          # Remove listed premium options
@@ -60,10 +66,6 @@ ynh_script_progression "Adding $app's configuration files..."
     ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
     ynh_replace --match="https://jsoncrack.com" --replace="https://$domain$path" --file="$install_dir/src/constants/seo.ts"               # Change asset URL    
     ynh_replace --match="https://jsoncrack.com/editor" --replace="https://$domain$path/editor" --file="$install_dir/src/pages/editor.tsx" # Change cannonical URL   
-
-    # Fix page titles
-    ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx"
-    ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx"
     
     # Adapt text for YNH context
     ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
