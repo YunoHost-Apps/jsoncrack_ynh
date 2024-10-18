@@ -6,9 +6,14 @@ After=network.target
 Type=simple
 User=__APP__
 Group=__APP__
-EnvironmentFile=__INSTALL_DIR__/.env
 WorkingDirectory=__INSTALL_DIR__/
-ExecStart=__YNH_NPM__ next start -p __PORT__
+Environment="PATH=__PATH_WITH_NODEJS__"
+EnvironmentFile=__INSTALL_DIR__/.env
+ExecStart=__NODEJS_DIR__/pnpm start
+StandardOutput=append:/var/log/__APP__/__APP__.log
+StandardError=inherit
+Restart=always
+RestartSec=5s
 
 ### Depending on specificities of your service/app, you may need to tweak these
 ### .. but this should be a good baseline
