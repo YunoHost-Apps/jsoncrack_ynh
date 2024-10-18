@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /editor?json=*
+Sitemap: https://__DOMAIN____PATH__sitemap.txt

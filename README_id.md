@@ -29,6 +29,7 @@ This is a dummy description of this app features
 
 ## Dokumentasi dan sumber daya
 
+- Dokumentasi pengguna resmi: <https://jsoncrack.com/docs>
 - Depot kode aplikasi hulu: <https://github.com/AykutSarac/jsoncrack.com>
 - Gudang YunoHost: <https://apps.yunohost.org/app/jsoncrack>
 - Laporkan bug: <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>
