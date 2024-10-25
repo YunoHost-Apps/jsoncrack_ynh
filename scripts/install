@@ -52,43 +52,43 @@ ynh_script_progression "Adding $app's configuration files..."
     #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = dynamic(() => import(\"reaflow\"), { ssr:false });" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
     #~ ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
     #~ ynh_replace --match="require(\"reaflow" --replace="const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
-    ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx" # Page title
-    ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx" # Page title
-    sed -i "/\"build\"/c\    \"build\": \"next build --debug\"," "$install_dir/package.json" 
-    #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
-		#ssr:false 
-	#});
+    #~ ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx" # Page title
+    #~ ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx" # Page title
+    #~ sed -i "/\"build\"/c\    \"build\": \"next build --debug\"," "$install_dir/package.json" 
+    #~ #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
+		#~ #ssr:false 
+	#~ #});
 	
-    # Remove premium 
-    ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
-    ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx"          # Remove listed premium options
-    ynh_config_add --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx"          # Remove listed premium options
-    sed -i '/ExternalMode/d' "$install_dir/src/pages/editor.tsx"                                                             # Remove call for premium when executed not from official domain
-    sed -Ei '/if \(aboveSupportedLimit\) \{/,+3 d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx" # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
-    sed -i '/SUPPORTED_LIMIT/d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx"                    # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
+    #~ # Remove premium 
+    #~ ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
+    #~ ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx"          # Remove listed premium options
+    #~ ynh_config_add --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx"          # Remove listed premium options
+    #~ sed -i '/ExternalMode/d' "$install_dir/src/pages/editor.tsx"                                                             # Remove call for premium when executed not from official domain
+    #~ sed -Ei '/if \(aboveSupportedLimit\) \{/,+3 d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx" # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
+    #~ sed -i '/SUPPORTED_LIMIT/d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx"                    # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
-    # SEO
-    ynh_config_add --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
-    ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
-    ynh_replace --match="https://jsoncrack.com" --replace="https://$domain$path" --file="$install_dir/src/constants/seo.ts"               # Change asset URL    
-    ynh_replace --match="https://jsoncrack.com/editor" --replace="https://$domain$path/editor" --file="$install_dir/src/pages/editor.tsx" # Change cannonical URL   
+    #~ # SEO
+    #~ ynh_config_add --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
+    #~ ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
+    #~ ynh_replace --match="https://jsoncrack.com" --replace="https://$domain$path" --file="$install_dir/src/constants/seo.ts"               # Change asset URL    
+    #~ ynh_replace --match="https://jsoncrack.com/editor" --replace="https://$domain$path/editor" --file="$install_dir/src/pages/editor.tsx" # Change cannonical URL   
     
-    # Adapt text for YNH context
-    ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
-    sed -i '/already notified/d' "$install_dir/src/pages/_error.tsx"                                                                                  # Delete deceptive speech now Sentry is going to be disabled 
-    ynh_replace --match="Don&apos;t worry, our development team was" --replace="Try refreshing the page." --file="$install_dir/src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
+    #~ # Adapt text for YNH context
+    #~ ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
+    #~ sed -i '/already notified/d' "$install_dir/src/pages/_error.tsx"                                                                                  # Delete deceptive speech now Sentry is going to be disabled 
+    #~ ynh_replace --match="Don&apos;t worry, our development team was" --replace="Try refreshing the page." --file="$install_dir/src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
     
-    # Remove Google Analytics (user tracking)
-    sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
-    sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
-    sed -Ei '/IS_PROD/,+1 d' "$install_dir/src/pages/_app.tsx"
-    ynh_replace --match=" onClick={() => gaEvent(\"show_tools_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ToolsMenu.tsx" # Delete part of line containing 'gaEvent'
-    ynh_replace --match=" onClick={() => gaEvent(\"show_view_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ViewMenu.tsx"   # Delete part of line containing 'gaEvent'
-    ynh_replace --match=" onClick={() => gaEvent(\"show_zoom_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ZoomMenu.tsx"   # Delete part of line containing 'gaEvent'
-    gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                                     # Delete lines containing 'gaEvent' for files located in src/*
+    #~ # Remove Google Analytics (user tracking)
+    #~ sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
+    #~ sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
+    #~ sed -Ei '/IS_PROD/,+1 d' "$install_dir/src/pages/_app.tsx"
+    #~ ynh_replace --match=" onClick={() => gaEvent(\"show_tools_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ToolsMenu.tsx" # Delete part of line containing 'gaEvent'
+    #~ ynh_replace --match=" onClick={() => gaEvent(\"show_view_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ViewMenu.tsx"   # Delete part of line containing 'gaEvent'
+    #~ ynh_replace --match=" onClick={() => gaEvent(\"show_zoom_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ZoomMenu.tsx"   # Delete part of line containing 'gaEvent'
+    #~ gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                                     # Delete lines containing 'gaEvent' for files located in src/*
 
-    # Disable Sentry (error tracking linked to the app's official instance)
-    ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
+    #~ # Disable Sentry (error tracking linked to the app's official instance)
+    #~ ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
 
     #~ # Remove Sentry (error tracking)
     #~ sed -i '/sentry/d' "$install_dir/package.json"
