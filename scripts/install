@@ -124,7 +124,7 @@ pushd "$install_dir/src"
     chown -R "$app:www-data" .
     rm ../.eslintrc.json
     ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
-    ynh_hide_warnings ynh_exec_as_app pnpm lint:fix
+    #~ ynh_hide_warnings ynh_exec_as_app pnpm lint:fix
     ynh_hide_warnings ynh_exec_as_app pnpm build
 popd
 
