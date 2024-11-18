@@ -9,19 +9,27 @@ set -x
 
 upstream_owner="AykutSarac"
 upstream_repo="jsoncrack.com"
+upstream_branch="main"
 ynh_owner="Yunohost-Apps"
 ynh_repo="jsoncrack_ynh"
 build_node_version=20
+source_type="commit" # 'commit' or 'release'
 
 #Fill with Github Personal Token to upload release after build (not required if build is part of a Github workflow) - https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
 gh_personal_token="" 
-
+https://api.github.com/repos/AykutSarac/jsoncrack.com/commits/main
 #=================================================
 # DOWNLOAD AND EXTRACT SOURCE
 #=================================================
-last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
+if [[ $source_type == "release" ]]; then
+	last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
+	download_url="https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}"
+else
+	last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1)
+	download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
+fi
 build_folder="${upstream_repo}_${last_upstream_version}"
-curl -LJ "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}" --output "${build_folder}.tar.gz"
+curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
