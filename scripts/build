@@ -25,6 +25,7 @@ curl -LJ "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarbal
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
+: <<'END'
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Fix upstream issues
     sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
@@ -82,6 +83,7 @@ tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
     #~ rm "$install_dir/sentry.client.config.ts"
     #~ rm "$install_dir/sentry.edge.config.ts"
 
+
 # Copy node package files in build directory 
 cp "$install_dir/package.json" "$install_dir/src/package.json" 
 cp "$install_dir/pnpm-lock.yaml" "$install_dir/src/pnpm-lock.yaml" 
@@ -90,7 +92,7 @@ cp "$install_dir/pnpm-lock.yaml" "$install_dir/src/pnpm-lock.yaml"
 ynh_config_add --template=".env" --destination="$install_dir/.env"
 
 chown -R "$app:www-data" "$install_dir"
-
+END
 #=================================================
 # BUILD
 #=================================================
@@ -107,23 +109,24 @@ pushd "$build_folder"
     fi
 
     # Actual build instructions
-pushd "$install_dir/src"
+	#~ mkdir -p app
+	#~ cp package.json pnpm-lock.yaml app
     corepack enable
     corepack enable pnpm
-    corepack use pnpm@latest
-    pnpm install --config.confirmModulesPurge=false --frozen-lockfile
+    #~ corepack use pnpm@latest
+    #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
+    pnpm install --frozen-lockfile
     #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
-    tar -cf parent.tar ../ && tar -xf parent.tar
+    #~ tar -cf parent.tar ../ && tar -xf parent.tar
     #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
     #~ chown -R "$app:www-data" .
-    rm ../.eslintrc.json
+    #~ rm ../.eslintrc.json
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
-    pnpm run lint:fix
+    #~ pnpm run lint:fix
     pnpm run build
-popd
 
     # Package
-    mv "dist" "${ynh_repo}"
+    mv "out" "${ynh_repo}"
     zip -r $ynh_archive_name "${ynh_repo}"
     mv $ynh_archive_name "../${ynh_archive_name}"
 popd
