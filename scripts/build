@@ -114,6 +114,7 @@ pushd "$build_folder"
     #~ corepack enable
     #~ cd app
     corepack enable pnpm && pnpm install --frozen-lockfile
+    ls -a
     #~ corepack use pnpm@latest
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
     #~ pnpm install --frozen-lockfile
@@ -125,7 +126,7 @@ pushd "$build_folder"
     #~ COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     #~ pnpm run lint:fix
     pnpm run build
-    ls
+    ls -a
 
     # Package	
     mv "out" "${ynh_repo}"
