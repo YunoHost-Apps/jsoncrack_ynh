@@ -11,24 +11,24 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Installing dependencies..."
 
-ynh_nodejs_install
+#~ ynh_nodejs_install
 
 #=================================================
 # ADD SWAP IF NEEDED
 #=================================================
-ynh_script_progression "Adding swap if needed..."
+#~ ynh_script_progression "Adding swap if needed..."
 
-total_memory=$(ynh_get_ram --total)
-swap_needed=0
+#~ total_memory=$(ynh_get_ram --total)
+#~ swap_needed=0
 
-if [ $total_memory -lt $memory_needed ]; then
-    # Need a minimum of ??Go of memory
-    swap_needed=$(($memory_needed - $total_memory))
-fi
+#~ if [ $total_memory -lt $memory_needed ]; then
+    #~ # Need a minimum of ??Go of memory
+    #~ swap_needed=$(($memory_needed - $total_memory))
+#~ fi
 
-ynh_script_progression "Adding $swap_needed Mo to swap..."
+#~ ynh_script_progression "Adding $swap_needed Mo to swap..."
 
-ynh_add_swap --size=$swap_needed
+#~ ynh_add_swap --size=$swap_needed
 
 #=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
@@ -42,93 +42,15 @@ ynh_setup_source --dest_dir="$install_dir"
 #=================================================
 ynh_script_progression "Adding $app's configuration files..."
 
-# Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    # Fix upstream issues
-    #~ sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
-    #~ sed -i "/const config = {/a \ \ experimental: { esmExternals: 'loose'}," "$install_dir/next.config.js"
-    #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = async () => { const mod = await import('reaflow'); return mod.default; };" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
-    #~ sed -i "/esModuleInterop/a \ \ \ \ \"allowSyntheticDefaultImports\": true," "$install_dir/tsconfig.json"
-    #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
-    #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = dynamic(() => import(\"reaflow\"), { ssr:false });" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
-    #~ ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
-    #~ ynh_replace --match="require(\"reaflow" --replace="const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
-    #~ ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/404.tsx" # Page title
-    #~ ynh_replace --match="ToDiagram" --replace="JSON Crack" --file="$install_dir/src/pages/_error.tsx" # Page title
-    #~ sed -i "/\"build\"/c\    \"build\": \"next build --debug\"," "$install_dir/package.json" 
-    #~ #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
-		#~ #ssr:false 
-	#~ #});
-	
-    #~ # Remove premium 
-    #~ ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
-    #~ ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx"          # Remove listed premium options
-    #~ ynh_config_add --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx"          # Remove listed premium options
-    #~ sed -i '/ExternalMode/d' "$install_dir/src/pages/editor.tsx"                                                             # Remove call for premium when executed not from official domain
-    #~ sed -Ei '/if \(aboveSupportedLimit\) \{/,+3 d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx" # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
-    #~ sed -i '/SUPPORTED_LIMIT/d' "$install_dir/src/containers/Editor/components/views/GraphView/index.tsx"                    # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
-    
-    #~ # SEO
-    #~ ynh_config_add --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
-    #~ ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
-    #~ ynh_replace --match="https://jsoncrack.com" --replace="https://$domain$path" --file="$install_dir/src/constants/seo.ts"               # Change asset URL    
-    #~ ynh_replace --match="https://jsoncrack.com/editor" --replace="https://$domain$path/editor" --file="$install_dir/src/pages/editor.tsx" # Change cannonical URL   
-    
-    #~ # Adapt text for YNH context
-    #~ ynh_replace --match="jsoncrack.com" --replace="JSON_graph" --file="$install_dir/src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
-    #~ sed -i '/already notified/d' "$install_dir/src/pages/_error.tsx"                                                                                  # Delete deceptive speech now Sentry is going to be disabled 
-    #~ ynh_replace --match="Don&apos;t worry, our development team was" --replace="Try refreshing the page." --file="$install_dir/src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
-    
-    #~ # Remove Google Analytics (user tracking)
-    #~ sed -i '/nextjs-google-analytics/d' "$install_dir/package.json"
-    #~ sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
-    #~ sed -Ei '/IS_PROD/,+1 d' "$install_dir/src/pages/_app.tsx"
-    #~ ynh_replace --match=" onClick={() => gaEvent(\"show_tools_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ToolsMenu.tsx" # Delete part of line containing 'gaEvent'
-    #~ ynh_replace --match=" onClick={() => gaEvent(\"show_view_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ViewMenu.tsx"   # Delete part of line containing 'gaEvent'
-    #~ ynh_replace --match=" onClick={() => gaEvent(\"show_zoom_menu\")}" --replace="" --file="$install_dir/src/containers/Toolbar/ZoomMenu.tsx"   # Delete part of line containing 'gaEvent'
-    #~ gaEvent_list=$(grep -rl 'gaEvent' "$install_dir/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                                     # Delete lines containing 'gaEvent' for files located in src/*
-
-    #~ # Disable Sentry (error tracking linked to the app's official instance)
-    #~ ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
-
-    #~ # Remove Sentry (error tracking)
-    #~ sed -i '/sentry/d' "$install_dir/package.json"
-    #~ sed -i '/@sentry/d' "$install_dir/next.config.js"
-    #~ sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
-    #~ sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
-    #~ sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
-    #~ rm "$install_dir/sentry.client.config.ts"
-    #~ rm "$install_dir/sentry.edge.config.ts"
-
-# Copy node package files in build directory 
-cp "$install_dir/package.json" "$install_dir/src/package.json" 
-cp "$install_dir/pnpm-lock.yaml" "$install_dir/src/pnpm-lock.yaml" 
-
-# Overwrite upstream's environement variables
-ynh_config_add --template=".env" --destination="$install_dir/.env"
+#~ ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
+#~ ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx"          # Remove listed premium options
+#~ ynh_config_add --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx"          # Remove listed premium options
+#~ ynh_config_add --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
+#~ ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
+#~ ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
+#~ ynh_config_add --template=".env" --destination="$install_dir/.env"
 
 chown -R "$app:www-data" "$install_dir"
-
-#=================================================
-# APP BUILD
-#=================================================
-ynh_script_progression "Building application (be patient)..."
-
-pushd "$install_dir/src"
-    corepack enable
-    ynh_exec_as_app corepack enable pnpm
-    ynh_exec_as_app corepack use pnpm@latest
-    ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false
-    #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
-    ynh_hide_warnings ynh_exec_as_app tar -cf parent.tar ../ && tar -xf parent.tar
-    #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
-    chown -R "$app:www-data" .
-    rm ../.eslintrc.json
-    ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
-    #~ ynh_hide_warnings ynh_exec_as_app pnpm lint:fix
-    ynh_hide_warnings ynh_exec_as_app pnpm build
-popd
-
-# Clean build directory - TODO
 
 #=================================================
 # SYSTEM CONFIGURATION

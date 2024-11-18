@@ -1,0 +1,46 @@
+name: ynh-build-on-upstream-update
+on:
+  pull_request:
+    types: [opened]
+jobs: 
+  ynh-app-release:
+    if: ${{ github.event.pull_request.user.login == 'yunohost-bot' && 
+            startsWith(github.event.pull_request.title, 'Upgrade to v') }} 
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse data from PR
+        id: pr_data
+        run: |
+          echo "VERSION=${${{ github.event.pull_request.title }}#Upgrade to v}" >> $GITHUB_OUTPUT
+          echo "URL=$(${{github.event.pull_request.body}} | grep -o 'http[s]\?://[^ ]\+' | head -1)" >> $GITHUB_OUTPUT
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build release
+        id: build_release
+        run: | 
+          chmod +x scripts/build
+          ./scripts/build
+      - name: Prepare draft release
+        id: draft_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ${{ steps.build_release.outputs.YNH_ARCHIVE }}
+          tag_name: v${{ steps.pr_data.outputs.VERSION }}
+          draft: true
+          prerelease: false
+          body: |
+            Version built for Yunohost to ensure sub-directory install compatibility using `scripts/build` and `.github/workflows/ynh-build-on-upstream-update.yml`
+            ### Changelog
+            Cf. upstream release note: ${{ steps.pr_data.outputs.URL }}
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: |
+            'Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}
+             Make sure the release is published before merging this PR.'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
