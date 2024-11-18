@@ -111,11 +111,12 @@ pushd "$build_folder"
     # Actual build instructions
 	#~ mkdir -p app
 	#~ cp package.json pnpm-lock.yaml app
-    corepack enable
-    corepack enable pnpm
+    #~ corepack enable
+    #~ cd app
+    corepack enable pnpm && pnpm install --frozen-lockfile
     #~ corepack use pnpm@latest
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
-    pnpm install --frozen-lockfile
+    #~ pnpm install --frozen-lockfile
     #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
     #~ tar -cf parent.tar ../ && tar -xf parent.tar
     #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
@@ -126,7 +127,7 @@ pushd "$build_folder"
     pnpm run build
     ls
 
-    # Package
+    # Package	
     mv "out" "${ynh_repo}"
     zip -r $ynh_archive_name "${ynh_repo}"
     mv $ynh_archive_name "../${ynh_archive_name}"
