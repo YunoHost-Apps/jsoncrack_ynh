@@ -121,9 +121,10 @@ pushd "$build_folder"
     #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
     #~ chown -R "$app:www-data" .
     #~ rm ../.eslintrc.json
-    COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
+    #~ COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     #~ pnpm run lint:fix
     pnpm run build
+    ls
 
     # Package
     mv "out" "${ynh_repo}"
