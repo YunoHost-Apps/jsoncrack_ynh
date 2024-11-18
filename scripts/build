@@ -107,8 +107,20 @@ pushd "$build_folder"
     fi
 
     # Actual build instructions
+pushd "$install_dir/src"
     corepack enable
-    pnpm i && pnpm build
+    ynh_exec_as_app corepack enable pnpm
+    ynh_exec_as_app corepack use pnpm@latest
+    ynh_hide_warnings ynh_exec_as_app pnpm install --config.confirmModulesPurge=false --frozen-lockfile
+    #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
+    ynh_hide_warnings ynh_exec_as_app tar -cf parent.tar ../ && tar -xf parent.tar
+    #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
+    chown -R "$app:www-data" .
+    rm ../.eslintrc.json
+    ynh_hide_warnings ynh_exec_as_app COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
+    ynh_hide_warnings ynh_exec_as_app pnpm run lint:fix
+    ynh_hide_warnings ynh_exec_as_app pnpm run build
+popd
 
     # Package
     mv "dist" "${ynh_repo}"
