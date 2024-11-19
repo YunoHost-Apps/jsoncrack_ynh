@@ -34,6 +34,9 @@ curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
+	pwd
+	ls ./
+	ls ./src
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Fix upstream issues
     #~ sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
