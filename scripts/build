@@ -53,9 +53,9 @@ pushd "$build_folder"
     # Remove calls to premium 
     sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
     #~ sed -i  '/{\!isWidget/{ :Loop N; /^\s*)}/!b Loop; /upgrade/d }' "./src/containers/Toolbar/index.tsx";
-    sed -i '/\{!isWidget/,/^\s*\)\}/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/index.tsx"                 # Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
+    sed -i '/{!isWidget/,/^\s*)}/{H;$!d;}; x;/upgrade/d;${p;x;}' "./src/containers/Toolbar/index.tsx"                   # Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     cat "./src/containers/Toolbar/index.tsx"
-    sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/OptionsMenu.tsx"      # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
+    sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/OptionsMenu.tsx"  # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/ToolsMenu.tsx"    # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                   # Remove call for premium when executed not from official domain
     sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/containers/Editor/components/views/GraphView/index.tsx"           # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
@@ -118,7 +118,6 @@ pushd "$build_folder"
     #~ corepack enable
     #~ cd app
     #~ corepack enable pnpm && pnpm install --frozen-lockfile
-    #~ ls -a
     #~ corepack use pnpm@latest
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
     #~ pnpm install --frozen-lockfile
@@ -130,7 +129,6 @@ pushd "$build_folder"
     #~ COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     #~ pnpm run lint:fix
     #~ pnpm run build
-    #~ ls -a
 
     # Package   
     mv "${default_build_folder}" "${ynh_repo}"
