@@ -23,11 +23,11 @@ gh_personal_token=""
 # DOWNLOAD AND EXTRACT SOURCE
 #=================================================
 if [[ $source_type == "release" ]]; then
-	last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
-	download_url="https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}"
+    last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
+    download_url="https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}"
 else
-	last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1)
-	download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
+    last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1)
+    download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
 fi
 build_folder="${upstream_repo}_${last_upstream_version}"
 curl -LJ $download_url --output "${build_folder}.tar.gz"
@@ -47,19 +47,19 @@ pushd "$build_folder"
     #~ ynh_replace --match="require(\"reaflow" --replace="const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
     #~ sed -i "/\"build\"/c\    \"build\": \"next build --debug\"," "./package.json" 
     #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
-		#ssr:false 
-	#});
-	
+        #ssr:false 
+    #});
+    
     # Remove calls to premium 
     sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
     #~ sed -i  '/{\!isWidget/{ :Loop N; /^\s*)}/!b Loop; /upgrade/d }' "./src/containers/Toolbar/index.tsx";
-	sed -i '/\{\!isWidget/,/^\s*\)\}/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/index.tsx"; 				# Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
+    sed -i '/{!isWidget/,/^\s*)}/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/index.tsx"                 # Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     cat "./src/containers/Toolbar/index.tsx"
-    sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/OptionsMenu.tsx"; # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
-    sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/ToolsMenu.tsx"; 	# Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
-    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                             		# Remove call for premium when executed not from official domain
-    sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/containers/Editor/components/views/GraphView/index.tsx" 			# Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
-    sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                    		# Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
+    sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/OptionsMenu.tsx"      # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
+    sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/ToolsMenu.tsx"    # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
+    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                   # Remove call for premium when executed not from official domain
+    sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/containers/Editor/components/views/GraphView/index.tsx"           # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
+    sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
@@ -71,15 +71,15 @@ pushd "$build_folder"
     
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
-    sed -i '/already notified/d' "./src/pages/_error.tsx"                                   				   # Delete deceptive speech now Sentry is going to be disabled 
+    sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled 
     sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
     
     # Remove Google Analytics (user tracking)
-    sed -i '/NEXT_PUBLIC_GA_MEASUREMENT_ID/d' "./env"
+    sed -i '/NEXT_PUBLIC_GA_MEASUREMENT_ID/d' "./.env"
     sed -i '/nextjs-google-analytics/d' "./package.json"
-    sed -i '/GoogleAnalytics/d' "$install_dir/src/pages/_app.tsx"
-    sed -Ei '/IS_PROD/,+1 d' "$install_dir/src/pages/_app.tsx"
-    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/containers/Toolbar/ToolsMenu.tsx" 	# Delete part of line containing 'gaEvent'
+    sed -i '/GoogleAnalytics/d' "./src/pages/_app.tsx"
+    sed -Ei '/IS_PROD/,+1 d' "./src/pages/_app.tsx"
+    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/containers/Toolbar/ToolsMenu.tsx"  # Delete part of line containing 'gaEvent'
     sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/containers/Toolbar/ViewMenu.tsx"    # Delete part of line containing 'gaEvent'
     sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/containers/Toolbar/ZoomMenu.tsx"    # Delete part of line containing 'gaEvent'
     gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'        # Delete complete lines containing 'gaEvent' for files located in src/*
@@ -111,10 +111,10 @@ pushd "$build_folder"
             echo "Current Node.js version ($current_node_version) not matching building requirement ($build_node_version). Please install expected Node.js version or Node Version Manager (nvm)"
         fi
     fi
-	
+    
     # Actual build instructions
-	#~ mkdir -p app
-	#~ cp package.json pnpm-lock.yaml app
+    #~ mkdir -p app
+    #~ cp package.json pnpm-lock.yaml app
     #~ corepack enable
     #~ cd app
     #~ corepack enable pnpm && pnpm install --frozen-lockfile
@@ -132,7 +132,7 @@ pushd "$build_folder"
     #~ pnpm run build
     #~ ls -a
 
-    # Package	
+    # Package   
     mv "${default_build_folder}" "${ynh_repo}"
     zip -r $ynh_archive_name "${ynh_repo}"
     mv $ynh_archive_name "../${ynh_archive_name}"
