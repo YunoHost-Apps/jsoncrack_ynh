@@ -107,13 +107,17 @@ pushd "$build_folder"
             echo "Current Node.js version ($current_node_version) not matching building requirement ($build_node_version). Please install expected Node.js version or Node Version Manager (nvm)"
         fi
     fi
-
+	
+	pwd
+	ls ./
+	ls ./src
+	
     # Actual build instructions
 	#~ mkdir -p app
 	#~ cp package.json pnpm-lock.yaml app
     #~ corepack enable
     #~ cd app
-    corepack enable pnpm && pnpm install --frozen-lockfile
+    #~ corepack enable pnpm && pnpm install --frozen-lockfile
     #~ ls -a
     #~ corepack use pnpm@latest
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
@@ -125,7 +129,7 @@ pushd "$build_folder"
     #~ rm ../.eslintrc.json
     #~ COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     #~ pnpm run lint:fix
-    pnpm run build
+    #~ pnpm run build
     #~ ls -a
 
     # Package	
