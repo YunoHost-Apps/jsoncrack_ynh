@@ -18,7 +18,7 @@ default_build_folder="out" # often 'dist'
 
 #Fill with Github Personal Token to upload release after build (not required if build is part of a Github workflow) - https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
 gh_personal_token="" 
-https://api.github.com/repos/AykutSarac/jsoncrack.com/commits/main
+
 #=================================================
 # DOWNLOAD AND EXTRACT SOURCE
 #=================================================
@@ -54,8 +54,10 @@ pushd "$build_folder"
 	#});
 	
     # Remove calls to premium 
-    sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"  														# Remove link to Premium signup page   
-    sed -i '/{\!isWidget/,/^\s*)}/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/index.tsx"; 				# Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
+    sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
+    sed -i  '/{\!isWidget/{ :Loop N; /^\s*)}/!b Loop; /upgrade/d }' "./src/containers/Toolbar/index.tsx";
+    cat "./src/containers/Toolbar/index.tsx"														# Remove link to Premium signup page   
+	sed -i '/{\!isWidget/,/^\s*)}/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/index.tsx"; 				# Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/OptionsMenu.tsx"; # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/ToolsMenu.tsx"; 	# Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                             		# Remove call for premium when executed not from official domain
