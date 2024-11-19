@@ -34,6 +34,7 @@ curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
+pushd "$build_folder"
 	pwd
 	ls ./
 	ls ./src
@@ -95,6 +96,7 @@ tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
     #~ sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
     #~ rm "$install_dir/sentry.client.config.ts"
     #~ rm "$install_dir/sentry.edge.config.ts"
+popd
 
 #=================================================
 # BUILD
