@@ -35,9 +35,6 @@ mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
 pushd "$build_folder"
-	pwd
-	ls ./
-	ls ./src
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
     # Fix upstream issues
     #~ sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
@@ -54,9 +51,10 @@ pushd "$build_folder"
 	#});
 	
     # Remove calls to premium 
+    sed --version
     sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
     sed -i  '/{\!isWidget/{ :Loop N; /^\s*)}/!b Loop; /upgrade/d }' "./src/containers/Toolbar/index.tsx";
-    cat "./src/containers/Toolbar/index.tsx"														# Remove link to Premium signup page   
+    #~ cat "./src/containers/Toolbar/index.tsx"														# Remove link to Premium signup page   
 	sed -i '/{\!isWidget/,/^\s*)}/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/index.tsx"; 				# Remove call to Premium ('{!isWidget' conditionnal code block containing string 'upgrade', cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/OptionsMenu.tsx"; # Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
     sed -i '/<Menu\.Item/,/<\/Menu\.Item>/{H;\$!d;}; x;/upgrade/d;\${p;x;}' "./src/containers/Toolbar/ToolsMenu.tsx"; 	# Remove listed premium options ('<Menu.Item>' code block containing string 'upgrade'), cf. https://www.linuxquestions.org/questions/linux-general-1/sed-delete-block-only-if-it-contains-matching-text-4175634159/#post5879857
@@ -114,10 +112,6 @@ pushd "$build_folder"
             echo "Current Node.js version ($current_node_version) not matching building requirement ($build_node_version). Please install expected Node.js version or Node Version Manager (nvm)"
         fi
     fi
-	
-	pwd
-	ls ./
-	ls ./src
 	
     # Actual build instructions
 	#~ mkdir -p app
