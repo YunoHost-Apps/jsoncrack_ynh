@@ -49,8 +49,8 @@ ram.runtime = "50M"
 
         [resources.sources.main]
         # This is not used as we are using git clone. It's only here for autoupdate.
-        url = "https://github.com/AykutSarac/jsoncrack.com/archive/c492d9a62b8c4c95c26479d7f53398564b968945.zip"
-        sha256 = "4496ad691815f958eda5c64eeae1c2e28747ed782190f9ec7ae58a682780b6d9"
+        url = "https://github.com/AykutSarac/jsoncrack.com/archive/d5f9bfc7fba1f1908863390f16ba28589d84a7d5.zip"
+        sha256 = "82df215f539437eefa4e49b0a33dae67b8927d2b90169bb08e1cf368bec50cde"
         prefetch = false
         autoupdate.strategy = "latest_github_commit"
 
