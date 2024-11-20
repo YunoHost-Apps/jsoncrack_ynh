@@ -34,22 +34,8 @@ curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
-pushd "$build_folder"
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    # Fix upstream issues
-    #~ sed -i '1 i import dynamic from "next/dynamic";' "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # add first line
-    #~ sed -i "/const config = {/a \ \ experimental: { esmExternals: 'loose'}," "$install_dir/next.config.js"
-    #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = async () => { const mod = await import('reaflow'); return mod.default; };" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
-    #~ sed -i "/esModuleInterop/a \ \ \ \ \"allowSyntheticDefaultImports\": true," "$install_dir/tsconfig.json"
-    #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
-    #~ sed -i "/require(\"reaflow\"/c\  const getParentsForNodeId = dynamic(() => import(\"reaflow\"), { ssr:false });" "$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts" # replace full line
-    #~ ynh_replace --match="require(\"reaflow" --replace="await import(\"reaflow" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
-    #~ ynh_replace --match="require(\"reaflow" --replace="const getParentsForNodeId = dynamic(() => import(\"reaflow\").then(c => c.getParentsForNodeId), { ssr:false });" --file="$install_dir/src/containers/Editor/components/views/GraphView/lib/utils/getNodePath.ts"
-    #~ sed -i "/\"build\"/c\    \"build\": \"next build --debug\"," "./package.json" 
-    #const getParentsForNodeId = dynamic(() => import("reaflow").then(c => c.getParentsForNodeId), { 
-        #ssr:false 
-    #});
-    
+pushd "$build_folder"
     # Remove calls to premium 
     sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
     sed -i '/{!isWidget/{:Loop;N;/\n\s*)}/!bLoop;/upgrade/d}' "./src/containers/Toolbar/index.tsx"                      # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='upgrade'). 
@@ -61,12 +47,12 @@ pushd "$build_folder"
     sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/pages/editor.tsx"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/pages/editor.tsx"
     
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
@@ -112,21 +98,7 @@ pushd "$build_folder"
     fi
     
     # Actual build instructions
-    #~ mkdir -p app
-    #~ cp package.json pnpm-lock.yaml app
-    #~ corepack enable
-    #~ cd app
-    #~ corepack enable pnpm 
     corepack enable pnpm && pnpm install --no-frozen-lockfile
-    #~ corepack use pnpm@9.1.4
-    
-    #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
-    #~ pnpm install --frozen-lockfile
-    #~ ynh_hide_warnings ynh_exec_as_app NODE_OPTIONS="--max-old-space-size=1536" pnpm install --config.confirmModulesPurge=false
-    #~ tar -cf parent.tar ../ && tar -xf parent.tar
-    #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
-    #~ chown -R "$app:www-data" .
-    #~ rm ../.eslintrc.json
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     pnpm run lint:fix
     pnpm run build
