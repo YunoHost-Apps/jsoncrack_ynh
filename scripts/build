@@ -127,7 +127,7 @@ pushd "$build_folder"
     #~ chown -R "$app:www-data" .
     #~ rm ../.eslintrc.json
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
-    #~ pnpm run lint:fix
+    pnpm run lint:fix
     pnpm run build
 
     # Package   
