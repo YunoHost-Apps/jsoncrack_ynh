@@ -111,11 +111,12 @@ pushd "$build_folder"
     fi
     
     # Actual build instructions
-    mkdir -p app
-    cp package.json pnpm-lock.yaml app
+    #~ mkdir -p app
+    #~ cp package.json pnpm-lock.yaml app
     corepack enable
-    cd app
-    corepack enable pnpm && pnpm install --frozen-lockfile
+    #~ cd app
+    corepack enable pnpm 
+    pnpm install --config.confirmModulesPurge=false --frozen-lockfile
     #~ corepack use pnpm@9.1.4
     
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
