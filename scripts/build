@@ -111,12 +111,12 @@ pushd "$build_folder"
     fi
     
     # Actual build instructions
-    #~ mkdir -p app
-    #~ cp package.json pnpm-lock.yaml app
-    #~ corepack enable
-    #~ cd app
+    mkdir -p app
+    cp package.json pnpm-lock.yaml app
+    corepack enable
+    cd app
     corepack enable pnpm
-    corepack use pnpm@9.1.4
+    #~ corepack use pnpm@9.1.4
     pnpm install --frozen-lockfile
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
     #~ pnpm install --frozen-lockfile
@@ -125,7 +125,7 @@ pushd "$build_folder"
     #for i in ../*; do [ "$i" != "../src" ] && cp -r "$i" . ; done  # copy all parents files and folder from $install_dir to $install_dir/src except /src
     #~ chown -R "$app:www-data" .
     #~ rm ../.eslintrc.json
-    #~ COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
+    COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     #~ pnpm run lint:fix
     pnpm run build
 
