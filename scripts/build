@@ -116,7 +116,7 @@ pushd "$build_folder"
     #~ corepack enable
     #~ cd app
     corepack enable pnpm
-    corepack use pnpm@latest
+    corepack use pnpm@9.1.4
     pnpm install --frozen-lockfile
     #~ pnpm install --config.confirmModulesPurge=false --frozen-lockfile
     #~ pnpm install --frozen-lockfile
