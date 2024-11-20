@@ -47,12 +47,12 @@ pushd "$build_folder"
     sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
-    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
-    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
-    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
-    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
-    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
-    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/pages/editor.tsx"
+    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
+    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
+    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
+    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
+    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
+    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/pages/editor.tsx"
     
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
@@ -70,16 +70,16 @@ pushd "$build_folder"
     gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'        # Delete complete lines containing 'gaEvent' for files located in src/*
 
     # Disable Sentry (error tracking linked to the app's official instance)
-    sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
+    #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
 
     #~ # Remove Sentry (error tracking)
-    #~ sed -i '/sentry/d' "$install_dir/package.json"
-    #~ sed -i '/@sentry/d' "$install_dir/next.config.js"
-    #~ sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
-    #~ sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
-    #~ sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
-    #~ rm "$install_dir/sentry.client.config.ts"
-    #~ rm "$install_dir/sentry.edge.config.ts"
+    sed -i '/sentry/d' "$install_dir/package.json"
+    sed -i '/@sentry/d' "$install_dir/next.config.js"
+    sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
+    sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
+    sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
+    rm "$install_dir/sentry.client.config.ts"
+    rm "$install_dir/sentry.edge.config.ts"
 popd
 
 #=================================================
