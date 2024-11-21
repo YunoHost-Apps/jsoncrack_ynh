@@ -47,6 +47,7 @@ pushd "$build_folder"
     sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
+    sed -i 's/"baseUrl": "\."/"baseUrl": "__YNH_SUBDIR_PATH__"/g' "./tsconfig.json"
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
@@ -73,13 +74,13 @@ pushd "$build_folder"
     #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
 
     #~ # Remove Sentry (error tracking)
-    sed -i '/sentry/d' "$install_dir/package.json"
-    sed -i '/@sentry/d' "$install_dir/next.config.js"
-    sed -i '/const sentryConfig/,+14d' "$install_dir/next.config.js"
-    sed -i 's/sentryConfig/""/' "$install_dir/next.config.js"
-    sed -i '/Sentry/d' "$install_dir/src/data/terms.json"
-    rm "$install_dir/sentry.client.config.ts"
-    rm "$install_dir/sentry.edge.config.ts"
+    sed -i '/sentry/d' "./package.json"
+    sed -i '/@sentry/d' "./next.config.js"
+    sed -i '/const sentryConfig/,+14d' "./next.config.js"
+    sed -i 's/sentryConfig/""/' "./next.config.js"
+    sed -i '/Sentry/d' "./src/data/terms.json"
+    rm "./sentry.client.config.ts"
+    rm "./sentry.edge.config.ts"
 popd
 
 #=================================================
