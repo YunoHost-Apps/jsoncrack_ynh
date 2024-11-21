@@ -34,7 +34,7 @@ curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
-# Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
+# Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml) 
 pushd "$build_folder"
     # Remove calls to premium 
     sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
