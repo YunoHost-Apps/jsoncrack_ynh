@@ -5,7 +5,9 @@
 
 # JSON Crack для YunoHost
 
-[![Уровень интеграции](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![Состояние работы](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![Состояние сопровождения](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![Уровень интеграции](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![Состояние работы](https://apps.yunohost.org/badge/state/jsoncrack)
+![Состояние сопровождения](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![Установите JSON Crack с YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 

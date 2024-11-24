@@ -5,7 +5,9 @@ EZ editatu eskuz.
 
 # JSON Crack YunoHost-erako
 
-[![Integrazio maila](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![Funtzionamendu egoera](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![Mantentze egoera](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![Integrazio maila](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![Funtzionamendu egoera](https://apps.yunohost.org/badge/state/jsoncrack)
+![Mantentze egoera](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![Instalatu JSON Crack YunoHost-ekin](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 

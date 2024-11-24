@@ -5,7 +5,9 @@ NON debe editarse manualmente.
 
 # JSON Crack para YunoHost
 
-[![Nivel de integración](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![Estado de funcionamento](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![Estado de mantemento](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![Nivel de integración](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![Estado de funcionamento](https://apps.yunohost.org/badge/state/jsoncrack)
+![Estado de mantemento](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![Instalar JSON Crack con YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 

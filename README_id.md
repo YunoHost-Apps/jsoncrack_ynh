@@ -5,7 +5,9 @@ Ini TIDAK boleh diedit dengan tangan.
 
 # JSON Crack untuk YunoHost
 
-[![Tingkat integrasi](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![Status kerja](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![Status pemeliharaan](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![Tingkat integrasi](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![Status kerja](https://apps.yunohost.org/badge/state/jsoncrack)
+![Status pemeliharaan](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![Pasang JSON Crack dengan YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 

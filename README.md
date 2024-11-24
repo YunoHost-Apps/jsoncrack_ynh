@@ -5,7 +5,9 @@ It shall NOT be edited by hand.
 
 # JSON Crack for YunoHost
 
-[![Integration level](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![Working status](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![Maintenance status](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![Integration level](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![Working status](https://apps.yunohost.org/badge/state/jsoncrack)
+![Maintenance status](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![Install JSON Crack with YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 
