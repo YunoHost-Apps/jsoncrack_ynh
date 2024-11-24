@@ -34,7 +34,7 @@ curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
-# Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml) 
+# Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
 pushd "$build_folder"
     # Remove calls to premium 
     sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
@@ -42,12 +42,14 @@ pushd "$build_folder"
     sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgrade/d}' "./src/containers/Toolbar/OptionsMenu.tsx"   # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
     sed -i '/const setVisible/d' "./src/containers/Toolbar/OptionsMenu.tsx"                                             # Remove related const declaration to avoid lint error
     sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgrade/d}' "./src/containers/Toolbar/ToolsMenu.tsx"     # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
+    sed -i '/<Button/{:Loop;N;/\n\s*</Button>/!bLoop;/upgrade/d}' "./src/containers/Modals/NodeModal/index.tsx"  		# Remove listed premium options (removes all blocks delimited with START='<Button' and END='\n\s*</Button>' which contains TARGET='upgrade'). 
+    sed -i '/const setVisible/d' "./src/containers/Modals/NodeModal/index.tsx"                                          # Remove related const declaration to avoid lint error
     sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                   # Remove call for premium when executed not from official domain
     sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/containers/Editor/components/views/GraphView/index.tsx"           # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
     sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
-    sed -i 's/"baseUrl": "\."/"baseUrl": "__YNH_SUBDIR_PATH__"/g' "./tsconfig.json"
+    #~ sed -i 's/"baseUrl": "\."/"baseUrl": "__YNH_SUBDIR_PATH__"/g' "./tsconfig.json"
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
     sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
