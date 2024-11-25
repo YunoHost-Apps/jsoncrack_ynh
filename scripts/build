@@ -30,7 +30,7 @@ else
     last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1) #e.g. d5f9bfc7fba1f1908863390f16ba28589d84a7d5
     last_upstream_version_short=${last_upstream_version:0:8}
     last_date_tag=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
-    last_date_tag_short=${last_date_tag:0:10} | sed 's/-/./g' #e.g. 2024.11.19
+    last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
     download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
     build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v.2024.11.19-d5f9bfc7
 fi
