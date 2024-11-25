@@ -78,6 +78,8 @@ pushd "$build_folder"
     #~ # Remove Sentry (error tracking)
     sed -i '/sentry/d' "./package.json"
     sed -i '/@sentry/d' "./next.config.js"
+    sed -i '/const config/a \ \ basePath: \'\/__YNH_SUBDIR_PATH__\',' "./next.config.js"
+    sed -i '/CLIENTSCRIPT="foo"/a CLIENTSCRIPT2="hello"' file
     #~ sed -i '/const sentryConfig/{:Loop;N;/\n);/!bLoop;/upgrade/d}' "./next.config.js"
     sed -i '/const sentryConfig/,+14d' "./next.config.js"
     #~ sed -i 's/sentryConfig/""/' "./next.config.js"
