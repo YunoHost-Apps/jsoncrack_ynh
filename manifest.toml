@@ -47,12 +47,19 @@ ram.runtime = "50M"
 
     [resources.sources]
 
-        [resources.sources.main]
+        [resources.sources.upstream]
         # This is not used as we are using git clone. It's only here for autoupdate.
         url = "https://github.com/AykutSarac/jsoncrack.com/archive/d5f9bfc7fba1f1908863390f16ba28589d84a7d5.zip"
         sha256 = "82df215f539437eefa4e49b0a33dae67b8927d2b90169bb08e1cf368bec50cde"
         prefetch = false
         autoupdate.strategy = "latest_github_commit"
+
+        [resources.sources.ynh_build]
+        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.11.25/jsoncrack_v2024.11.25_d5f9bfc7_ynh.zip"
+        sha256 = "3ef39347c19768c03cfb92adcaad417426d08edbffe626d3b349e206301b090e"
+        format = "zip"
+        extract = true
+        in_subdir = true
 
     [resources.system_user]
 
