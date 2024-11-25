@@ -76,13 +76,14 @@ pushd "$build_folder"
     #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
 
     #~ # Remove Sentry (error tracking)
-    #~ sed -i '/sentry/d' "./package.json"
-    #~ sed -i '/@sentry/d' "./next.config.js"
+    sed -i '/sentry/d' "./package.json"
+    sed -i '/@sentry/d' "./next.config.js"
+    sed -i '/const sentryConfig/{:Loop;N;/\n);/!bLoop;/upgrade/d}' "./next.config.js"
     #~ sed -i '/const sentryConfig/,+14d' "./next.config.js"
-    #~ sed -i 's/sentryConfig/""/' "./next.config.js"
-    #~ sed -i '/Sentry/d' "./src/data/terms.json"
-    #~ rm "./sentry.client.config.ts"
-    #~ rm "./sentry.edge.config.ts"
+    sed -i 's/sentryConfig/""/' "./next.config.js"
+    sed -i '/Sentry/d' "./src/data/terms.json"
+    rm "./sentry.client.config.ts"
+    rm "./sentry.edge.config.ts"
 popd
 
 #=================================================
