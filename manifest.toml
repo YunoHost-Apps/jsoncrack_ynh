@@ -55,11 +55,15 @@ ram.runtime = "50M"
         autoupdate.strategy = "latest_github_commit"
 
         [resources.sources.ynh_build]
-        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.11.25/jsoncrack_v2024.11.25_d5f9bfc7_ynh.zip"
-        sha256 = "3ef39347c19768c03cfb92adcaad417426d08edbffe626d3b349e206301b090e"
+        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.11.19/jsoncrack.com_v2024.11.19_d5f9bfc7_ynh.zip"
+        sha256 = "7da4ab7fceb92241bafbb0f82846f41b555013fda246191b039f61c8a4630bc4"
         format = "zip"
         extract = true
         in_subdir = true
+
+        [resources.sources.monaco-editor]
+        url = "https://registry.npmjs.org/@picmo/popup-picker/-/popup-picker-5.8.5.tgz"
+        sha256 = "dfa3f631df9b96b5073a620876a4147175e3222af8d652f78c0960caf83bc57a"
 
     [resources.system_user]
 
