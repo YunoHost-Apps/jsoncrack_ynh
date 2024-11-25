@@ -49,13 +49,13 @@ pushd "$build_folder"
     sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
-    sed -i '/const config/a \ \ basePath: "\/__YNH_SUBDIR_PATH__\",' "./next.config.js"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/CNAME"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/robots.txt"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
-    sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/pages/editor.tsx"
+    sed -i '/const config/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
+    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/CNAME"
+    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/robots.txt"
+    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
+    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
+    #~ sed -i 's/jsoncrack.com/__YNH_SUBDIR_PATH__/g' "./src/pages/editor.tsx"
     
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
