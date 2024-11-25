@@ -25,11 +25,15 @@ gh_personal_token=""
 if [[ $source_type == "release" ]]; then
     last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
     download_url="https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}"
+    build_folder="${upstream_repo}_${last_upstream_version}"
 else
-    last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1)
+    last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1) #e.g. d5f9bfc7fba1f1908863390f16ba28589d84a7d5
+    last_upstream_version_short=${last_upstream_version:0:8}
+    last_date_tag=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
+    last_date_tag_short=${last_date_tag:0:10} | sed 's/-/./g' #e.g. 2024.11.19
     download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
+    build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v.2024.11.19-d5f9bfc7
 fi
-build_folder="${upstream_repo}_${last_upstream_version}"
 curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
@@ -44,6 +48,7 @@ pushd "$build_folder"
     sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgrade/d}' "./src/containers/Toolbar/ToolsMenu.tsx"     # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
     sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/upgrade/d}' "./src/containers/Modals/NodeModal/index.tsx"  		# Remove listed premium options (removes all blocks delimited with START='<Button' and END='\n\s*</Button>' which contains TARGET='upgrade'). 
     sed -i '/const setVisible/d' "./src/containers/Modals/NodeModal/index.tsx"                                          # Remove related const declaration to avoid lint error
+	sed -i 's/Cookie.get("upgrade_shown")/true/g' "./src/pages/editor.tsx"                                              # Remove call for premium when opened for the first time or after cookie expiry
     sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                   # Remove call for premium when executed not from official domain
     sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/containers/Editor/components/views/GraphView/index.tsx"           # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
     sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
