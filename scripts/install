@@ -11,7 +11,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Installing dependencies..."
 
-#~ ynh_nodejs_install
+ynh_nodejs_install
 
 #=================================================
 # ADD SWAP IF NEEDED
