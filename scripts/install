@@ -68,19 +68,19 @@ ynh_script_progression "Adding system configurations related to $app..."
 # Create a dedicated NGINX config using the conf/nginx.conf template
 ynh_config_add_nginx
 
-# Create a dedicated systemd config
-ynh_config_add_systemd
+#~ # Create a dedicated systemd config
+#~ ynh_config_add_systemd
 
-# Integrate service in YunoHost
-yunohost service add "$app" --description="Visualization application that transforms various data formats, such as JSON, YAML, XML, CSV and more, into interactive graphs" --log="/var/log/$app/$app.log"
+#~ # Integrate service in YunoHost
+#~ yunohost service add "$app" --description="Visualization application that transforms various data formats, such as JSON, YAML, XML, CSV and more, into interactive graphs" --log="/var/log/$app/$app.log"
 
-#=================================================
-# START SYSTEMD SERVICE
-#=================================================
-ynh_script_progression "Starting $app's systemd service..."
+#~ #=================================================
+#~ # START SYSTEMD SERVICE
+#~ #=================================================
+#~ ynh_script_progression "Starting $app's systemd service..."
 
-# Start a systemd service
-ynh_systemctl --service="$app" --action="start"
+#~ # Start a systemd service
+#~ ynh_systemctl --service="$app" --action="start"
 
 #=================================================
 # END OF SCRIPT
