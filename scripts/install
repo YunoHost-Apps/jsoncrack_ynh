@@ -31,8 +31,8 @@ grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_
 # Keep only the core app and remove useless files and folders related with upstream website
 remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "manifest.json" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")
 for item in "${remove[@]}"; do
-    if [ -e "$item" ]; then
-        rm -rf "$item"
+    if [ -e "$install_dir/$item" ]; then
+        rm -rf "$install_dir/$item"
         echo "$item has been removed."
     else
         echo "$item does not exist."
