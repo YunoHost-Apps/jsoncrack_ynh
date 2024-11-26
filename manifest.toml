@@ -62,8 +62,11 @@ ram.runtime = "50M"
         in_subdir = true
 
         [resources.sources.monaco-editor]
-        url = "https://registry.npmjs.org/@picmo/popup-picker/-/popup-picker-5.8.5.tgz"
-        sha256 = "dfa3f631df9b96b5073a620876a4147175e3222af8d652f78c0960caf83bc57a"
+        # Circumvent CDN - version will have to be bumped manually as per version used upstream (grep 'cdnjs' $install_dir)
+        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.34.0.tgz"
+        sha256 = "df93fb468b31fa8caf643ea46010378ab96ec3a2a0c322d9676688517abd49b1"
+        extract = true
+        in_subdir = true
 
     [resources.system_user]
 

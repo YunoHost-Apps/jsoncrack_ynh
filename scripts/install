@@ -14,23 +14,6 @@ ynh_script_progression "Installing dependencies..."
 ynh_nodejs_install
 
 #=================================================
-# ADD SWAP IF NEEDED
-#=================================================
-#~ ynh_script_progression "Adding swap if needed..."
-
-#~ total_memory=$(ynh_get_ram --total)
-#~ swap_needed=0
-
-#~ if [ $total_memory -lt $memory_needed ]; then
-    #~ # Need a minimum of ??Go of memory
-    #~ swap_needed=$(($memory_needed - $total_memory))
-#~ fi
-
-#~ ynh_script_progression "Adding $swap_needed Mo to swap..."
-
-#~ ynh_add_swap --size=$swap_needed
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression "Setting up source files..."
@@ -42,21 +25,12 @@ newpath=""
 if [[ $path != '/' ]]; then newpath=$path; fi
 
 # Replace path placeholder recursively in all files of the app folder
-grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
-grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
+grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' "$install_dir/*" | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
+grep -rli '/__YNH_SUBDIR_PATH__' "$install_dir/*" | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
 
-#=================================================
-# APP INITIAL CONFIGURATION
-#=================================================
-ynh_script_progression "Adding $app's configuration files..."
-
-#~ ynh_config_add --template="index.tsx" --destination="$install_dir/src/containers/Toolbar/index.tsx"                      # Remove calls for premium and signup page   
-#~ ynh_config_add --template="OptionsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/OptionsMenu.tsx"          # Remove listed premium options
-#~ ynh_config_add --template="ToolsMenu.tsx" --destination="$install_dir/src/containers/Toolbar/indexToolsMenutsx"          # Remove listed premium options
-#~ ynh_config_add --template="sitemap.txt" --destination="$install_dir/public/sitemap.txt"
-#~ ynh_config_add --template="robot.txt" --destination="$install_dir/public/robot.txt"
-#~ ynh_config_add --template="sentry.client.config.ts" --destination="$install_dir/sentry.client.config.ts"
-#~ ynh_config_add --template=".env" --destination="$install_dir/.env"
+# Install CDN packages locally
+ynh_setup_source --dest_dir="$install_dir/libs/monaco-editor/0.34.0/" --source_id="monaco-editor"
+grep -rli 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/' "$install_dir/_next/static/chunks/*" | xargs sed -i "s@cdnjs.cloudflare.com/ajax@$domain$path@g"
 
 chown -R "$app:www-data" "$install_dir"
 
@@ -67,20 +41,6 @@ ynh_script_progression "Adding system configurations related to $app..."
 
 # Create a dedicated NGINX config using the conf/nginx.conf template
 ynh_config_add_nginx
-
-#~ # Create a dedicated systemd config
-#~ ynh_config_add_systemd
-
-#~ # Integrate service in YunoHost
-#~ yunohost service add "$app" --description="Visualization application that transforms various data formats, such as JSON, YAML, XML, CSV and more, into interactive graphs" --log="/var/log/$app/$app.log"
-
-#~ #=================================================
-#~ # START SYSTEMD SERVICE
-#~ #=================================================
-#~ ynh_script_progression "Starting $app's systemd service..."
-
-#~ # Start a systemd service
-#~ ynh_systemctl --service="$app" --action="start"
 
 #=================================================
 # END OF SCRIPT
