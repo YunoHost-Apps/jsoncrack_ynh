@@ -28,14 +28,14 @@ if [[ $path != '/' ]]; then newpath=$path; fi
 grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
 grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
 
+# Replace relative link to avoid messing with nginx config
+ynh_replace --match="href=\"/jsoncrack\"" --replace="href=\"https://$domain$path\"" --file="$install_dir/editor.html"
+
 # Keep only the core app and remove useless files and folders related with upstream website
 remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "manifest.json" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")
 for item in "${remove[@]}"; do
     if [ -e "$install_dir/$item" ]; then
         rm -rf "$install_dir/$item"
-        echo "$item has been removed."
-    else
-        echo "$item does not exist."
     fi
 done
 
