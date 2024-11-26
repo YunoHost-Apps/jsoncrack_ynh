@@ -55,10 +55,6 @@ pushd "$build_folder"
     
     # Prepare $domain$path replacement
     sed -i '/const config/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
-    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/CNAME"
-    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/robots.txt"
-    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/sitemap.xml"
-    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./public/sitemap-0.xml"
     sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
     
     # Adapt text for YNH context
@@ -76,7 +72,7 @@ pushd "$build_folder"
     sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/containers/Toolbar/ZoomMenu.tsx"    # Delete part of line containing 'gaEvent'
     gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'        # Delete complete lines containing 'gaEvent' for files located in src/*
 
-    # Disable Sentry (error tracking linked to the app's official instance)
+    # Disable Sentry (error tracking linked to the app's official instance) --> Doesn't seem enough to avoid calls to Sentry's website so we prefer to remove completely for now
     #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
 
     # Remove Sentry (error tracking)
