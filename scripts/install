@@ -7,13 +7,6 @@ source _common.sh
 source /usr/share/yunohost/helpers
 
 #=================================================
-# INSTALL DEPENDENCIES
-#=================================================
-ynh_script_progression "Installing dependencies..."
-
-ynh_nodejs_install
-
-#=================================================
 # DOWNLOAD, CHECK AND UNPACK SOURCE
 #=================================================
 ynh_script_progression "Setting up source files..."
@@ -29,7 +22,7 @@ grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/
 grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
 
 # Replace relative link to avoid messing with nginx config
-ynh_replace --match="href=\"/jsoncrack\"" --replace="href=\"https://$domain$path\"" --file="$install_dir/editor.html"
+ynh_replace --match='href="/jsoncrack"' --replace='href="#"' --file="$install_dir/editor.html"
 
 # Keep only the core app and remove useless files and folders related with upstream website
 remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "manifest.json" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")
