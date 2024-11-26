@@ -25,12 +25,12 @@ newpath=""
 if [[ $path != '/' ]]; then newpath=$path; fi
 
 # Replace path placeholder recursively in all files of the app folder
-grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' "$install_dir/*" | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
-grep -rli '/__YNH_SUBDIR_PATH__' "$install_dir/*" | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
+grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
+grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
 
 # Install CDN packages locally
 ynh_setup_source --dest_dir="$install_dir/libs/monaco-editor/0.34.0/" --source_id="monaco-editor"
-grep -rli 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/' "$install_dir/_next/static/chunks/*" | xargs sed -i "s@cdnjs.cloudflare.com/ajax@$domain$path@g"
+grep -rli 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.0/' $install_dir/_next/static/chunks/* | xargs sed -i "s@cdnjs.cloudflare.com/ajax@$domain$path@g"
 
 chown -R "$app:www-data" "$install_dir"
 
