@@ -60,10 +60,10 @@ pushd "$build_folder"
     sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
     sed -i 's/"\/manifest.json"/"\/__YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
     sed -i 's/"\/favicon.ico"/"\/__YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
-    sed -i 's/Link href="\/"/Link href="\/"/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"__YNH_SUBDIR_PATH__\/assets/g' "./src/containers/Editor/components/LiveEditor.tsx"
-    sed -i 's/"\/assets/"__YNH_SUBDIR_PATH__\/assets/g' "./src/containers/Editor/components/views/GraphView/index.tsx"
-    sed -i 's/"\/assets/"__YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/Link href="\/"/Link href="\/editor"/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/containers/Editor/components/LiveEditor.tsx"
+    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/containers/Editor/components/views/GraphView/index.tsx"
+    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
     
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
