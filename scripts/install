@@ -25,7 +25,7 @@ grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_
 ynh_replace --match='href="/jsoncrack"' --replace='href="#"' --file="$install_dir/editor.html"
 
 # Keep only the core app and remove useless files and folders related with upstream website
-remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "manifest.json" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")
+remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")
 for item in "${remove[@]}"; do
     if [ -e "$install_dir/$item" ]; then
         rm -rf "$install_dir/$item"
