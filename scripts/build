@@ -65,7 +65,7 @@ pushd "$build_folder"
     #~ sed -i 's/Link href="\/"/Link href="\/__YNH_SUBDIR_PATH__"/g' "./src/layout/JsonCrackLogo.tsx"
     sed -i 's/Link href="\/"/Link href="\/"/g' "./src/layout/JsonCrackLogo.tsx"
     #~ sed -i 's/src="\/assets/src="\/__YNH_SUBDIR_PATH__\/assets/g' "./src/pages/widget.tsx"
-    grep -rli '"/assets' "./src" | xargs sed - i 's/"\/assets/"__YNH_SUBDIR_PATH__\/assets/g' 
+    grep -rli '"/assets' "./src" | xargs sed -i 's/"\/assets/"__YNH_SUBDIR_PATH__\/assets/g' 
     
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
