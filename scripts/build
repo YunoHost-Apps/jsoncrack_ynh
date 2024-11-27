@@ -60,11 +60,13 @@ pushd "$build_folder"
     sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
     sed -i 's/"\/manifest.json"/"\/__YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
     sed -i 's/"\/favicon.ico"/"\/__YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
-    sed -i 's/Link href="\/"/Link href="\/editor"/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's@\"/assets@\"__YNH_SUBDIR_PATH__/assets@g' "./src/containers/Editor/components/LiveEditor.tsx"
-    sed -i 's@\"/assets@\"__YNH_SUBDIR_PATH__/assets@g' "./src/containers/Editor/components/views/GraphView/index.tsx"
-    sed -i 's@\"/assets@\"__YNH_SUBDIR_PATH__/assets@g' "./src/pages/widget.tsx"
-
+    #~ sed -i 's/url("\/assets\/cursor.svg")/url("\/__YNH_SUBDIR_PATH__\/assets\/cursor.svg")/g' "./src/containers/Editor/components/LiveEditor.tsx"
+    #~ sed -i 's/url("\/assets\/cursor.svg")/url("\/__YNH_SUBDIR_PATH__\/assets\/cursor.svg")/g' "./src/containers/Editor/components/views/GraphView/index.tsx"
+    #~ sed -i 's/Link href="\/"/Link href="\/__YNH_SUBDIR_PATH__"/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/Link href="\/"/Link href="\/"/g' "./src/layout/JsonCrackLogo.tsx"
+    #~ sed -i 's/src="\/assets/src="\/__YNH_SUBDIR_PATH__\/assets/g' "./src/pages/widget.tsx"
+    grep -rli '"/assets' "./src" | xargs sed - i 's/"\/assets/"__YNH_SUBDIR_PATH__\/assets/g' 
+    
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
     sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled 
