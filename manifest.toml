@@ -5,7 +5,7 @@ name = "JSON Crack"
 description.en = "Data visualization app for JSON, YAML, XML, CSV formats and more"
 description.fr = "Application de visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
-version = "3.2.0~ynh1"
+version = "2024.11.19~ynh1"
 
 maintainers = ["oleole39"]
 
@@ -27,9 +27,9 @@ architectures = "all"
 multi_instance = true
 ldap = false
 sso = false
-disk = "50M"
-ram.build = "50M"
-ram.runtime = "50M"
+disk = "20M"
+ram.build = "0M"
+ram.runtime = "0M"
 
 [install]
     [install.domain]
