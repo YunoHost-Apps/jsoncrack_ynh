@@ -5,7 +5,9 @@
 
 # JSON Crack для YunoHost
 
-[![Уровень интеграции](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![Состояние работы](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![Состояние сопровождения](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![Уровень интеграции](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![Состояние работы](https://apps.yunohost.org/badge/state/jsoncrack)
+![Состояние сопровождения](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![Установите JSON Crack с YunoHost](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 
@@ -16,19 +18,28 @@
 
 ## Обзор
 
-This is a dummy description of this app features
+JSON Crack is a tool for visualizing JSON, YAML, CSV, XML, and TOML data in interactive graphs, making files easier to explore, format, and validate. It includes the following features:
+- Visualizer: Instantly convert JSON, YAML, CSV, XML, and TOML into interactive graphs or trees in dark or light mode.
+- Convert: Seamlessly transform data formats, like JSON to CSV or XML to JSON, for easy sharing.
+- Format & Validate: Beautify and validate JSON, YAML, and CSV for clear and accurate data.
+- Code Generation: Generate TypeScript interfaces, Golang structs, and JSON Schema.
+- JSON Schema: Create JSON Schema, mock data, and validate various data formats.
+- Advanced Tools: Decode JWT, randomize data, and run jq or JSON path queries.
+- Export Image: Download your visualization as PNG, JPEG, or SVG.
+- Privacy: All data processing is performed client-side; nothing is stored on the server.
 
 
-**Поставляемая версия:** 3.2.0~ynh1
+**Поставляемая версия:** 2024.11.19~ynh1
 
 **Демо-версия:** <https://jsoncrack.com/editor>
 
 ## Снимки экрана
 
-![Снимок экрана JSON Crack](./doc/screenshots/example.jpg)
+![Снимок экрана JSON Crack](./doc/screenshots/jsoncrack.png)
 
 ## Документация и ресурсы
 
+- Официальная документация пользователя: <https://jsoncrack.com/docs>
 - Репозиторий кода главной ветки приложения: <https://github.com/AykutSarac/jsoncrack.com>
 - Магазин YunoHost: <https://apps.yunohost.org/app/jsoncrack>
 - Сообщите об ошибке: <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>

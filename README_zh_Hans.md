@@ -5,7 +5,9 @@
 
 # YunoHost 上的 JSON Crack
 
-[![集成程度](https://dash.yunohost.org/integration/jsoncrack.svg)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/) ![工作状态](https://ci-apps.yunohost.org/ci/badges/jsoncrack.status.svg) ![维护状态](https://ci-apps.yunohost.org/ci/badges/jsoncrack.maintain.svg)
+[![集成程度](https://apps.yunohost.org/badge/integration/jsoncrack)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
+![工作状态](https://apps.yunohost.org/badge/state/jsoncrack)
+![维护状态](https://apps.yunohost.org/badge/maintained/jsoncrack)
 
 [![使用 YunoHost 安装 JSON Crack](https://install-app.yunohost.org/install-with-yunohost.svg)](https://install-app.yunohost.org/?app=jsoncrack)
 
@@ -16,19 +18,28 @@
 
 ## 概况
 
-This is a dummy description of this app features
+JSON Crack is a tool for visualizing JSON, YAML, CSV, XML, and TOML data in interactive graphs, making files easier to explore, format, and validate. It includes the following features:
+- Visualizer: Instantly convert JSON, YAML, CSV, XML, and TOML into interactive graphs or trees in dark or light mode.
+- Convert: Seamlessly transform data formats, like JSON to CSV or XML to JSON, for easy sharing.
+- Format & Validate: Beautify and validate JSON, YAML, and CSV for clear and accurate data.
+- Code Generation: Generate TypeScript interfaces, Golang structs, and JSON Schema.
+- JSON Schema: Create JSON Schema, mock data, and validate various data formats.
+- Advanced Tools: Decode JWT, randomize data, and run jq or JSON path queries.
+- Export Image: Download your visualization as PNG, JPEG, or SVG.
+- Privacy: All data processing is performed client-side; nothing is stored on the server.
 
 
-**分发版本：** 3.2.0~ynh1
+**分发版本：** 2024.11.19~ynh1
 
 **演示：** <https://jsoncrack.com/editor>
 
 ## 截图
 
-![JSON Crack 的截图](./doc/screenshots/example.jpg)
+![JSON Crack 的截图](./doc/screenshots/jsoncrack.png)
 
 ## 文档与资源
 
+- 官方用户文档： <https://jsoncrack.com/docs>
 - 上游应用代码库： <https://github.com/AykutSarac/jsoncrack.com>
 - YunoHost 商店： <https://apps.yunohost.org/app/jsoncrack>
 - 报告 bug： <https://github.com/YunoHost-Apps/jsoncrack_ynh/issues>

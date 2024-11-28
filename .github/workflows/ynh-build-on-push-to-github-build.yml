@@ -1,0 +1,37 @@
+name: ynh-build-on-push-to-github_build
+on:
+  push:
+    branches: [ "github_build" ]
+jobs: 
+  ynh-app-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse data from PR
+        id: pr_data
+        run: |
+          echo "VERSION=0.0.0" >> $GITHUB_OUTPUT
+          echo "URL=https://my-test-changelog.tld" >> $GITHUB_OUTPUT
+      - name: Checkout repo
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Build release
+        id: build_release
+        run: | 
+          chmod +x scripts/build
+          ./scripts/build
+      - name: Prepare draft release
+        id: draft_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ${{ steps.build_release.outputs.YNH_ARCHIVE }}
+          tag_name: v${{ steps.pr_data.outputs.VERSION }}
+          draft: true
+          prerelease: false
+          body: |
+            Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-push-to-testing.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
+            ### Changelog
+            Cf. upstream release note: ${{ steps.pr_data.outputs.URL }}
