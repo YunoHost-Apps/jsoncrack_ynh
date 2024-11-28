@@ -17,8 +17,8 @@ fund = "https://github.com/sponsors/AykutSarac"
 userdoc = "https://jsoncrack.com/docs"
 
 [antifeatures]
-not-totally-free-upstream.en = "Free for non-commercial use only"
-not-totally-free-upstream.fr = "Libre uniquement pour un usage non commercial"
+not-totally-free-upstream.en = "Free license valid for non-commercial use only"
+not-totally-free-upstream.fr = "Licence gratuite valable uniquement pour les usages non commerciaux"
 
 [integration]
 yunohost = ">= 11.2.30"
