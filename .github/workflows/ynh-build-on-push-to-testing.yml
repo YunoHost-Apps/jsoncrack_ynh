@@ -1,7 +1,7 @@
-name: ynh-build-on-push-to-github_build
+name: ynh-build-on-push-to-testing
 on:
   push:
-    branches: [ "github_build" ]
+    branches: [ "testing" ]
 jobs: 
   ynh-app-release:
     runs-on: ubuntu-latest

@@ -5,7 +5,7 @@ on:
 jobs: 
   ynh-app-release:
     if: ${{ github.event.pull_request.user.login == 'yunohost-bot' && 
-            startsWith(github.event.pull_request.title, 'Upgrade to v') }} 
+            startsWith(github.event.pull_request.title, 'Upgrade sources') }} 
     runs-on: ubuntu-latest
     steps:
       - name: Parse data from PR
