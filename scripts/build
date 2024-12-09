@@ -40,18 +40,17 @@ tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
 pushd "$build_folder"
-    # Remove calls to premium 
-    sed -i '/AccountMenu/d' "./src/containers/Toolbar/index.tsx"
-    sed -i '/{!isWidget/{:Loop;N;/\n\s*)}/!bLoop;/upgrade/d}' "./src/containers/Toolbar/index.tsx"                      # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='upgrade'). 
-    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgrade/d}' "./src/containers/Toolbar/OptionsMenu.tsx"   # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
-    sed -i '/const setVisible/d' "./src/containers/Toolbar/OptionsMenu.tsx"                                             # Remove related const declaration to avoid lint error
-    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgrade/d}' "./src/containers/Toolbar/ToolsMenu.tsx"     # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
-    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/upgrade/d}' "./src/containers/Modals/NodeModal/index.tsx"        # Remove listed premium options (removes all blocks delimited with START='<Button' and END='\n\s*</Button>' which contains TARGET='upgrade'). 
-    sed -i '/const setVisible/d' "./src/containers/Modals/NodeModal/index.tsx"                                          # Remove related const declaration to avoid lint error
-    sed -i 's/Cookie.get("upgrade_shown")/true/g' "./src/pages/editor.tsx"                                              # Remove call for premium when opened for the first time or after cookie expiry
-    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                   # Remove call for premium when executed not from official domain
-    sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/containers/Editor/components/views/GraphView/index.tsx"           # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
-    sed -i '/SUPPORTED_LIMIT/d' "./src/containers/Editor/components/views/GraphView/index.tsx"                          # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
+    # Remove calls to premium
+    sed -i '/{!isWidget/{:Loop;N;/\n\s*)}/!bLoop;/upgradeModal/d}' "./src/features/editor/Toolbar/index.tsx"                    # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='upgrade'). 
+    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgradeModal/d}' "./src/features/editor/Toolbar/OptionsMenu.tsx" # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
+    sed -i '/const setVisible/d' "./src/features/editor/Toolbar/OptionsMenu.tsx"                                                # Remove related const declaration to avoid lint error
+    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/upgradeModal/d}' "./src/features/editor/Toolbar/ToolsMenu.tsx"   # Remove listed premium options (removes all blocks delimited with START='<Menu\.Item' and END='\n\s*<\/Menu\.Item>' which contains TARGET='upgrade'). 
+    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/upgradeModal/d}' "./src/features/modals/NodeModal/index.tsx"             # Remove listed premium options (removes all blocks delimited with START='<Button' and END='\n\s*</Button>' which contains TARGET='upgrade'). 
+    sed -i '/const setVisible/d' "./src/features/modals/NodeModal/index.tsx"                                                    # Remove related const declaration to avoid lint error
+    #~ sed -i 's/Cookie.get("upgrade_shown")/true/g' "./src/pages/editor.tsx"                                                   # Remove call for premium when opened for the first time or after cookie expiry. --> EDIT: Should not be necessary anymore since that commit: https://github.com/AykutSarac/jsoncrack.com/commit/d614bf9d67fabe7c8110027442dd76ee05ba6be2 
+    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                           # Remove call for premium when executed not from official domain
+    sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/features/editor/views/GraphView/index.tsx"                                # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
+    sed -i '/SUPPORTED_LIMIT/d' "./src/features/editor/views/GraphView/index.tsx"                                               # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
     sed -i '/const config/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
@@ -61,12 +60,12 @@ pushd "$build_folder"
     sed -i 's/"\/manifest.json"/"\/__YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
     sed -i 's/"\/favicon.ico"/"\/__YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
     sed -i 's/Link href="\/"/Link href="\/editor"/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/containers/Editor/components/LiveEditor.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/containers/Editor/components/views/GraphView/index.tsx"
     sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
+    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
     
     # Adapt text for YNH context
-    sed -i 's/jsoncrack.com/JSON_graph/g' "./src/containers/Modals/DownloadModal/index.tsx"                    # Default download filename  
+    sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename  
     sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled 
     sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
     
@@ -75,10 +74,10 @@ pushd "$build_folder"
     sed -i '/nextjs-google-analytics/d' "./package.json"
     sed -i '/GoogleAnalytics/d' "./src/pages/_app.tsx"
     sed -Ei '/IS_PROD/,+1 d' "./src/pages/_app.tsx"
-    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/containers/Toolbar/ToolsMenu.tsx"  # Delete part of line containing 'gaEvent'
-    sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/containers/Toolbar/ViewMenu.tsx"    # Delete part of line containing 'gaEvent'
-    sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/containers/Toolbar/ZoomMenu.tsx"    # Delete part of line containing 'gaEvent'
-    gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'        # Delete complete lines containing 'gaEvent' for files located in src/*
+    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/features/editor/Toolbar/ToolsMenu.tsx"  # Delete part of line containing 'gaEvent'
+    sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/features/editor/Toolbar/ViewMenu.tsx"    # Delete part of line containing 'gaEvent'
+    sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/features/editor/Toolbar/ZoomMenu.tsx"    # Delete part of line containing 'gaEvent'
+    gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'             # Delete complete lines containing 'gaEvent' for files located in src/*
 
     # Disable Sentry (error tracking linked to the app's official instance) --> Doesn't seem enough to avoid calls to Sentry's website so we prefer to remove completely for now
     #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
@@ -88,7 +87,7 @@ pushd "$build_folder"
     sed -i '/@sentry/d' "./next.config.js"
     sed -i '/const sentryConfig/,+14d' "./next.config.js"
     sed -i 's/sentryConfig/bundleAnalyzerConfig/' "./next.config.js"
-    sed -i '/Sentry/d' "./src/data/terms.json"
+    #~ sed -i '/Sentry/d' "./src/data/terms.json" --> Upstream terms page is not used in YNH package at the moment  
     rm "./sentry.client.config.ts"
     rm "./sentry.edge.config.ts"
 popd
