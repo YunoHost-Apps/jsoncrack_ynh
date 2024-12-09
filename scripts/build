@@ -53,7 +53,7 @@ pushd "$build_folder"
     sed -i '/SUPPORTED_LIMIT/d' "./src/features/editor/views/GraphView/index.tsx"                                               # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
     
     # Prepare $domain$path replacement
-    sed -i '/const config/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
+    sed -i '/const config =/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
     sed -i 's/\/editor/\/__YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
     sed -i 's/assets/\/__YNH_SUBDIR_PATH__\/assets"/g' "./public/manifest.json"
     sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
@@ -85,8 +85,8 @@ pushd "$build_folder"
     # Remove Sentry (error tracking)
     sed -i '/sentry/d' "./package.json"
     sed -i '/@sentry/d' "./next.config.js"
-    sed -i '/const sentryConfig/,+14d' "./next.config.js"
-    sed -i 's/sentryConfig/bundleAnalyzerConfig/' "./next.config.js"
+    #~ sed -i '/const sentryConfig/,+14d' "./next.config.js"
+    #~ sed -i 's/sentryConfig/bundleAnalyzerConfig/' "./next.config.js"
     #~ sed -i '/Sentry/d' "./src/data/terms.json" --> Upstream terms page is not used in YNH package at the moment  
     rm "./sentry.client.config.ts"
     rm "./sentry.edge.config.ts"
