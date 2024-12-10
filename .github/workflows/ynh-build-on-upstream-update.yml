@@ -5,14 +5,14 @@ on:
 jobs: 
   ynh-app-release:
     if: ${{ github.event.pull_request.user.login == 'yunohost-bot' && 
-            startsWith(github.event.pull_request.title, 'Upgrade sources') }} 
+            startsWith(github.event.pull_request.title, 'Upgrade ') }}
     runs-on: ubuntu-latest
     steps:
       - name: Parse data from PR
         id: pr_data
         run: |
-          echo "VERSION=${${{ github.event.pull_request.title }}#Upgrade to v}" >> $GITHUB_OUTPUT
-          echo "URL=$(${{github.event.pull_request.body}} | grep -o 'http[s]\?://[^ ]\+' | head -1)" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo ${${{ github.event.pull_request.title }}#*\` v} | cut -d':' -f1)" >> $GITHUB_OUTPUT
+          echo "URL=$(echo ${{github.event.pull_request.body}} | grep -o 'http[s]\?://[^ ]\+' | head -1)" >> $GITHUB_OUTPUT
       - name: Checkout repo
         uses: actions/checkout@v4
       - name: Setup Node.js
