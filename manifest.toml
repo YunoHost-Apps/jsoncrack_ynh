@@ -63,8 +63,8 @@ ram.runtime = "0M"
 
         [resources.sources.monaco-editor]
         # Circumvent CDN - version will have to be bumped manually as per version used upstream (grep 'cdnjs' $install_dir or check upstream's `/src/features/editor/TextEditor.tsx`)
-        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.52.0.tgz"
-        sha256 = "5dbda58750b13452de39affcea703af096022d8e3546c67ed5d3bd072763f939"
+        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.52.2.tgz"
+        sha256 = "c280cdcf0b0c13d1a2bf01af958d4387ed06d7f6c918401d00c4adcae1bc72b6"
         extract = true
         in_subdir = true
 
