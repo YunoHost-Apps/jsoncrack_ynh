@@ -48,21 +48,21 @@ jobs:
             Cf. upstream release note: ${{ steps.pr_data.outputs.URL }}
 
       - name: Download built file
-          run: |
-            download_url=$(echo ${{ steps.draft_release.outputs.assets) }} | jq '.[].assets | .[] | select(.name == "${{ steps.build_release.outputs.YNH_ARCHIVE }}").browser_download_url'
-            wget $download_url -O release_asset
+        run: |
+          download_url=$(echo ${{ steps.draft_release.outputs.assets) }} | jq '.[].assets | .[] | select(.name == "${{ steps.build_release.outputs.YNH_ARCHIVE }}").browser_download_url'
+          wget $download_url -O release_asset
 
       - name: Compute SHA256 sum of the asset
-          id: compute_sha256
-          run: |
-            echo "SHASUM=$(sha256sum release_asset | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
+        id: compute_sha256
+        run: |
+          echo "SHASUM=$(sha256sum release_asset | awk '{ print $1 }')" >> "$GITHUB_OUTPUT"
 
       - name: Replace URL & SHA256 in manifest.toml
-          run: |
-            sed -i -e '|\[resources.sources.ynh_build\]|,|sha256|!b' \
-                -i -e '|url|s|=.*$|= "${{ steps.draft_release.outputs.url }}"|' \
-                -i -e '|sha256|s|=.*$|= "${{ steps.compute_sha256.outputs.SHASUM }}"|' \
-                manifest.toml
+        run: |
+          sed -i -e '|\[resources.sources.ynh_build\]|,|sha256|!b' \
+              -i -e '|url|s|=.*$|= "${{ steps.draft_release.outputs.url }}"|' \
+              -i -e '|sha256|s|=.*$|= "${{ steps.compute_sha256.outputs.SHASUM }}"|' \
+              manifest.toml
 
       - name: Commit changes to manifest.toml
         uses: EndBug/add-and-commit@v9
