@@ -30,7 +30,7 @@ for item in "${remove[@]}"; do
 done
 
 # Install CDN package locally
-monaco_source_url=$(ynh_read_manifest "resources.sources.monaco-editor.url")
+monaco_source_url=$(ynh_read_manifest "resources.sources_monaco-editor.url")
 monaco_version=$(echo $monaco_source_url | sed 's@.*monaco-editor-\([0-9.]\+\)\.tgz@\1@g') #e.g. `0.52.0`
 ynh_setup_source --dest_dir="$install_dir/libs/monaco-editor/$monaco_version/" --source_id="monaco-editor"
 grep -rli "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/$monaco_version/" $install_dir/_next/static/chunks/* | xargs sed -i "s@cdnjs.cloudflare.com/ajax@$domain$path@g"
