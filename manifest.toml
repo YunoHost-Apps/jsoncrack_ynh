@@ -5,7 +5,7 @@ name = "JSON Crack"
 description.en = "Data visualization app for JSON, YAML, XML, CSV formats and more"
 description.fr = "Application de visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
-version = "2024.11.19~ynh3"
+version = "2024.12.12~ynh1"
 
 maintainers = ["oleole39"]
 
@@ -55,8 +55,8 @@ ram.runtime = "0M"
         autoupdate.strategy = "latest_github_commit"
 
         [resources.sources.ynh_build]
-        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.12.08/jsoncrack.com_v2024.12.08_61cb1b1d_ynh.zip"
-        sha256 = "aaddb09c87e50713a9520c43fd9d8bd58d068720ce2392577f95120ad1fbbbcc"
+        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.12.12/jsoncrack.com_v2024.12.12_594ffe4f_ynh.zip"
+        sha256 = "92884260d64ea3b761a578a3c8c9610fe23a94e8fcab2d5a23dde56c557eacfa"
         format = "zip"
         extract = true
         in_subdir = true
