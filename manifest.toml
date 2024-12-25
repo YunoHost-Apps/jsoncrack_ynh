@@ -49,22 +49,22 @@ ram.runtime = "0M"
 
         [resources.sources.upstream]
         # This is not used as we are using git clone. It's only here for autoupdate.
-        url = "https://github.com/AykutSarac/jsoncrack.com/archive/594ffe4f7b82b3cda42f6e3cf63dbe216440f854.tar.gz"
-        sha256 = "cc6c3aeb3270bf93fafce6d387577f676853f286c73f371971d6f58b4ea4bdb8"
+        url = "https://github.com/AykutSarac/jsoncrack.com/archive/000e46566d2116becc2c0e8ea7d633427ebf9a07.tar.gz"
+        sha256 = "2f16d047e49a388d1af548ee5e0e51b93b03342e26284c4bf5be587b24866556"
         prefetch = false
         autoupdate.strategy = "latest_github_commit"
 
         [resources.sources.ynh_build]
-        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.12.12/jsoncrack.com_v2024.12.12_594ffe4f_ynh.zip"
-        sha256 = "92884260d64ea3b761a578a3c8c9610fe23a94e8fcab2d5a23dde56c557eacfa"
+        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2024.12.24/jsoncrack.com_v2024.12.24_000e4656_ynh.zip"
+        sha256 = "0985611f6b83f7f4e67454cfe11ce2892c829f592e8c061f3a22de5b981e912e"
         format = "zip"
         extract = true
         in_subdir = true
 
         [resources.sources.monaco_editor]
         # Circumvent CDN - version will have to be bumped manually as per version used upstream (grep 'cdnjs' $install_dir or check upstream's `/src/features/editor/TextEditor.tsx`)
-        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.52.0.tgz"
-        sha256 = "5dbda58750b13452de39affcea703af096022d8e3546c67ed5d3bd072763f939"
+        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.52.2.tgz"
+        sha256 = "c280cdcf0b0c13d1a2bf01af958d4387ed06d7f6c918401d00c4adcae1bc72b6"
         extract = true
         in_subdir = true
 
