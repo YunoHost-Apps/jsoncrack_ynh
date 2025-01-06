@@ -33,7 +33,7 @@ done
 monaco_source_url=$(ynh_read_manifest "resources.sources.monaco_editor.url")
 monaco_version=$(echo $monaco_source_url | sed 's@.*monaco-editor-\([0-9.]\+\)\.tgz@\1@g') #e.g. `0.52.0`
 ynh_setup_source --dest_dir="$install_dir/libs/monaco-editor/$monaco_version/" --source_id="monaco_editor"
-find . -maxdepth 1 -type d -not -path './min' -exec rm -r {} \; #remove useless parts of the package (>100mo) 
+find "$install_dir/libs/monaco-editor/$monaco_version/" -maxdepth 1 -type d -not -path './min' -exec rm -r {} \; #remove useless parts of the package (>100mo)
 grep -rli "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/$monaco_version/" $install_dir/_next/static/chunks/* | xargs sed -i "s@cdnjs.cloudflare.com/ajax@$domain$path@g"
 
 # Apply permissions
