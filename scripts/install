@@ -11,7 +11,7 @@ source /usr/share/yunohost/helpers
 #=================================================
 ynh_script_progression "Setting up source files..."
 
-ynh_setup_source --dest_dir="$install_dir" --source_id="ynh_build" --full-replace=1
+ynh_setup_source --dest_dir="$install_dir" --source_id="ynh_build"
 
 # Prepare $newpath for string replacement (empty if $path is root or $path if subdir is defined)
 newpath=""
