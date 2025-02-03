@@ -49,7 +49,7 @@ jobs:
 
       - name: Download built file
         run: |
-          download_url=$(echo "${{fromJson(steps.draft_release.outputs.assets).browser_download_url}}")
+          download_url=$(echo "${{fromJson(steps.draft_release.outputs.assets)[0].browser_download_url}}")
           wget $download_url -O release_asset
 
       - name: Compute SHA256 sum of the asset
