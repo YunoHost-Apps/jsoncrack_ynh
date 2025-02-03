@@ -109,7 +109,7 @@ pushd "$build_folder"
     fi
     
     # Actual build instructions
-    corepack enable pnpm && pnpm install --no-frozen-lockfile
+    corepack enable pnpm && corepack prepare pnpm@9.1.4 --activate && pnpm install --no-frozen-lockfile
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     pnpm run lint:fix
     pnpm run build
