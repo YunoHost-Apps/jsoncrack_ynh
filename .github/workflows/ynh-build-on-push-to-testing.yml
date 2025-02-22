@@ -27,7 +27,7 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          files: ${{ steps.build_release.outputs.YNH_ARCHIVE }}
+          files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
           tag_name: v${{ steps.pr_data.outputs.VERSION }}
           draft: true
           prerelease: false
