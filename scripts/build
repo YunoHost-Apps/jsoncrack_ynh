@@ -1,8 +1,8 @@
 #!/bin/bash
 
 #=================================================
-# BUILD SCRIPT RESOURCES USAGE:
-# Up to 1.5GB disk space and 4GB RAM. 
+# THIS BUILD SCRIPT RESOURCES USAGE:
+# ~1.5GB disk space and 4GB RAM. 
 #=================================================
 
 set -x
@@ -25,14 +25,16 @@ gh_personal_token=""
 if [[ $source_type == "release" ]]; then
     last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
     download_url="https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}"
-    build_folder="${upstream_repo}_${last_upstream_version}"
+    build_folder="${upstream_repo}_${last_upstream_version}" #e.g. jsoncrack_ynh_v3.2.0
+    release_version="${last_upstream_version}"
 else
     last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1) #e.g. d5f9bfc7fba1f1908863390f16ba28589d84a7d5
     last_upstream_version_short=${last_upstream_version:0:8}
     last_date_tag=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
     last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
     download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
-    build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v.2024.11.19-d5f9bfc7
+    build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
+    release_version="{$last_upstream_version_short}"
 fi
 curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
@@ -96,7 +98,7 @@ popd
 #=================================================
 # BUILD
 #=================================================
-ynh_archive_name="${build_folder}_ynh.zip"
+ynh_release_filename="${build_folder}_ynh.zip"
 pushd "$build_folder"
     # Call NVM if expected node version differs form current node version
     current_node_version=$(node -v | cut -c 2- | cut -c 1-${#build_node_version})
@@ -116,9 +118,11 @@ pushd "$build_folder"
 
     # Package   
     mv "${default_build_folder}" "${ynh_repo}"
-    zip -r $ynh_archive_name "${ynh_repo}"
-    mv $ynh_archive_name "../${ynh_archive_name}"
+    zip -r $ynh_release_filename "${ynh_repo}"
+    mv $ynh_release_filename "../${ynh_release_filename}"
 popd
+ynh_release_SHA=$(sha256sum ${ynh_release_filename} | cut -d' ' -f1)
+ynh_release_URL="https://github.com/${ynh_owner}/${ynh_repo}/releases/download/${release_version}/${ynh_release_filename}"
 
 #=================================================
 # CLEAN BUILD FOLDER
@@ -135,7 +139,7 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
     
     echo "Trying to upload the release to https://github.com/${ynh_owner}/${ynh_repo}/releases/ ..."
 
-    sha256sumarchive=$(sha256sum "$ynh_archive_name" | cut -d' ' -f1)
+    sha256sumarchive=$(sha256sum "$ynh_release_filename" | cut -d' ' -f1)
 
     if [[ "$@" =~ "push_release" ]]
     then
@@ -162,7 +166,7 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
         # $upload_generic is like:
         # "upload_url": "https://uploads.github.com/repos/:owner/:repo/releases/:ID/assets{?name,label}",
         upload_prefix=$(echo $upload_generic | cut -d "\"" -f4 | cut -d "{" -f1)
-        upload_file="$upload_prefix?name=$ynh_archive_name"
+        upload_file="$upload_prefix?name=$ynh_release_filename"
 
         echo "Start uploading first file"
         i=0
@@ -172,9 +176,9 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
             # Download file
             set +e
             succ=$(curl -H "Authorization: token $gh_personal_token" \
-                -H "Content-Type: $(file -b --mime-type $ynh_archive_name)" \
+                -H "Content-Type: $(file -b --mime-type $ynh_release_filename)" \
                 -H "Accept: application/vnd.github.v3+json" \
-                --data-binary @$ynh_archive_name $upload_file)
+                --data-binary @$ynh_release_filename $upload_file)
             res=$?
             set -e
             if [ $res -ne 0 ]; then
@@ -210,7 +214,11 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
 
 # Script run with Github Workflow or with empty $gh_personal_token
 else
-    if [[ $GITHUB_OUTPUT ]]; then echo "YNH_ARCHIVE=${ynh_archive_name}" >> $GITHUB_OUTPUT; fi #export var for Github Workflow
+    if [[ $GITHUB_OUTPUT ]]; then 
+		echo "YNH_RELEASE_FILE=${ynh_release_filename}" >> $GITHUB_OUTPUT
+		echo "YNH_RELEASE_SHA=${ynh_release_SHA}" >> $GITHUB_OUTPUT
+		echo "YNH_RELEASE_URL=${ynh_release_URL}" >> $GITHUB_OUTPUT
+	fi #export var for Github Workflow
     echo "Build completed but not uploaded - missing Github Token"
     set +x 
 fi
