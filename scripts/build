@@ -215,10 +215,10 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
 # Script run with Github Workflow or with empty $gh_personal_token
 else
     if [[ $GITHUB_OUTPUT ]]; then 
-		echo "YNH_RELEASE_FILE=${ynh_release_filename}" >> $GITHUB_OUTPUT
-		echo "YNH_RELEASE_SHA=${ynh_release_SHA}" >> $GITHUB_OUTPUT
-		echo "YNH_RELEASE_URL=${ynh_release_URL}" >> $GITHUB_OUTPUT
-	fi #export var for Github Workflow
+        echo "YNH_RELEASE_FILE=${ynh_release_filename}" >> $GITHUB_OUTPUT
+        echo "YNH_RELEASE_SHA=${ynh_release_SHA}" >> $GITHUB_OUTPUT
+        echo "YNH_RELEASE_URL=${ynh_release_URL}" >> $GITHUB_OUTPUT
+    fi #export var for Github Workflow
     echo "Build completed but not uploaded - missing Github Token"
     set +x 
 fi
