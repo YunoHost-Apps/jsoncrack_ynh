@@ -10,15 +10,15 @@ version = "2024.12.12~ynh7"
 maintainers = ["oleole39"]
 
 [upstream]
-license = "LicenseRef-json-crack-license"
+license = "LicenseRef-MIT-WITH-Commons-Clause-restriction"
 demo = "https://jsoncrack.com/editor"
 code = "https://github.com/AykutSarac/jsoncrack.com"
 fund = "https://github.com/sponsors/AykutSarac"
 userdoc = "https://jsoncrack.com/docs"
 
 [antifeatures]
-not-totally-free-upstream.en = "Free license valid for non-commercial use only"
-not-totally-free-upstream.fr = "Licence gratuite valable uniquement pour les usages non commerciaux"
+not-totally-free-upstream.en = "Free license valid for private and non-commercial use only"
+not-totally-free-upstream.fr = "Licence libre valable uniquement pour les usages privé et non commerciaux"
 
 [integration]
 yunohost = ">= 11.2.30"

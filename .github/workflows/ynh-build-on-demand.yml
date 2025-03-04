@@ -1,0 +1,65 @@
+name: ynh-build-on-demand
+on:
+  workflow_dispatch
+
+jobs: 
+  ynh-app-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Parse data from PR
+        id: pr_data
+        run: |
+          echo "VERSION=0.0.0" >> $GITHUB_OUTPUT
+          echo "URL=https://my-test-changelog.tld" >> $GITHUB_OUTPUT
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build release
+        id: build_release
+        run: | 
+          chmod +x scripts/build
+          ./scripts/build
+
+      - name: Prepare draft release
+        id: draft_release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
+          fail_on_unmatched_files: true
+          tag_name: v${{ steps.pr_data.outputs.VERSION }}
+          draft: true
+          prerelease: false
+          make_latest: true
+          body: |
+            Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-demand.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
+            ### Changelog
+            Cf. upstream release note: ${{ steps.pr_data.outputs.URL }}
+
+      - name: Replace URL & SHA256 in manifest.toml
+        run: |
+          sed -i -e '|\[resources.sources.ynh_build\]|,|sha256|!b' \
+              -i -e '|url|s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_URL }}"|' \
+              -i -e '|sha256|s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|' \
+              manifest.toml
+
+      - name: Commit changes to manifest.toml
+        uses: EndBug/add-and-commit@v9
+        with:
+          default_author: github_actions
+          message: 'Update release in manifest'
+          add: 'manifest.toml'
+
+      - name: Comment PR
+        uses: thollander/actions-comment-pull-request@v1
+        with:
+          message: |
+            Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}
+            - [ ] Make sure the release is published before testing this PR.
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
