@@ -44,6 +44,7 @@ tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 pushd "$build_folder"
     # Remove calls to premium
     sed -i '/{!isWidget/{:Loop;N;/\n\s*)}/!bLoop;/UpgradeModal/d}' "./src/features/editor/Toolbar/index.tsx"             # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='todiagram.com'). 
+    sed -i '/setVisible/d' "./src/features/editor/Toolbar/index.tsx"                                                     # Remove now unused var
     sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/UpgradeModal/d}' "./src/features/modals/NodeModal/index.tsx"      # Remove listed premium options (removes all blocks delimited with START='<Button' and END='\n\s*</Button>' which contains TARGET='upgrade'). 
     sed -i '/const setVisible/d' "./src/features/modals/NodeModal/index.tsx"                                             # Remove related const declaration to avoid lint error
     sed -i 's/Cookie.get("upgrade_shown")/true/g' "./src/pages/editor.tsx"                                               # Remove call for premium when opened for the first time or after cookie expiry. --> EDIT: Should not be necessary anymore since that commit: https://github.com/AykutSarac/jsoncrack.com/commit/d614bf9d67fabe7c8110027442dd76ee05ba6be2 
@@ -77,10 +78,11 @@ pushd "$build_folder"
     sed -i '/nextjs-google-analytics/d' "./package.json"
     sed -i '/GoogleAnalytics/d' "./src/pages/_app.tsx"
     sed -Ei '/IS_PROD/,+1 d' "./src/pages/_app.tsx"
-    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/features/editor/Toolbar/ToolsMenu.tsx"  # Delete part of line containing 'gaEvent'
-    sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/features/editor/Toolbar/ViewMenu.tsx"    # Delete part of line containing 'gaEvent'
-    sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/features/editor/Toolbar/ZoomMenu.tsx"    # Delete part of line containing 'gaEvent'
-    gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'             # Delete complete lines containing 'gaEvent' for files located in src/*
+    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/features/editor/Toolbar/ToolsMenu.tsx"         # Delete part of line containing 'gaEvent'
+    sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/features/editor/Toolbar/ViewMenu.tsx"           # Delete part of line containing 'gaEvent'
+    sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/features/editor/Toolbar/ZoomMenu.tsx"           # Delete part of line containing 'gaEvent'
+    sed -i '/gaEvent("toggle_expand_collapse", {/,/});/d' "./src/features/editor/views/GraphView/OptionsMenu.tsx"   # Delete part of line containing 'gaEvent' (full block to avoid compilation error)
+    gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                    # Delete complete lines containing 'gaEvent' for files located in src/*
 
     # Disable Sentry (error tracking linked to the app's official instance) --> Doesn't seem enough to avoid calls to Sentry's website so we prefer to remove completely for now
     #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
