@@ -142,7 +142,7 @@ rm "${build_folder}.tar.gz"
 curl --silent --output previous_manifest.toml "https://raw.githubusercontent.com/${full_upstream_path}/refs/heads/master/manifest.toml"
 
 # Extract previous upstream source URL
-previous_upstream_url=$(grep -A 5 "resources.sources.upstream" previous_manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)
+previous_upstream_url="$(grep -A 5 'resources.sources.upstream' previous_manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)"
 rm previous_manifest.toml
 
 # Get previous commit SHA-1 string 
