@@ -34,7 +34,7 @@ else
     last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
     download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
     build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
-    release_version="v{$last_upstream_version_short}"
+    release_version="${build_folder#${upstream_repo}_}"
 fi
 curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
