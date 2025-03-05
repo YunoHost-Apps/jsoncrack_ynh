@@ -8,11 +8,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Parse data from PR
-        id: pr_data
-        run: |
-          echo "VERSION=0.0.0" >> $GITHUB_OUTPUT
-          echo "URL=https://my-test-changelog.tld" >> $GITHUB_OUTPUT
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -26,7 +21,41 @@ jobs:
         run: | 
           chmod +x scripts/build
           ./scripts/build
-
+          
+      - name: Generate diff URL
+        id: diff_url
+        run: | 
+          # Get previous manifest version 
+          wget -O previous_manifest.toml "https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/master/manifest.toml"
+          # Extract URL
+          previous_upstream_url=$(grep -A 5 "resources.sources.upstream" manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)
+          # Extract upstream repo path
+          upstream_repo="${previous_upstream_url#https://github.com/}"
+          upstream_repo="${upstream_repo%/archive*}"
+          # Get previous commit SHA-1 string 
+          previous_upstream_filename=${previous_upstream_url##*/}
+          previous_upstream_filename=${previous_upstream_filename%.tar.gz}
+          previous_upstream_filename=${previous_upstream_filename%.zip}
+          if [[ "$previous_upstream_filename" =~ ^[0-9a-f]{40}$ ]] #check if it is a SHA-1 string or a tag
+          then 
+            previous_release_commit_SHA_full=${previous_upstream_filename}
+          else
+            previous_release_commit_SHA_full=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${upstream_repo}/git/refs/tags/" | jq -r ".[] | select(.ref==\"refs/tags/${previous_upstream_filename}\") | .object.sha") 
+          fi
+          previous_release_commit_SHA_short=${previous_release_commit_SHA_full:0:8}
+          # Get current commit SHA-1 string
+          current_version="${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}"
+          if [[ "$current_version" =~ ^v[0-9]{4}\.[0-9]{2}\.[0-9]{2}-[0-9a-f]{8}$ ]] #check if it has commit (predictable) or release (unpredictable) format.
+          then
+            current_release_commit_SHA_short=${current_version##*-}
+          else
+            current_release_commit_SHA_full=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${upstream_repo}/git/refs/tags/" | jq -r ".[] | select(.ref==\"refs/tags/${current_version}\") | .object.sha") 
+            current_release_commit_SHA_short=${current_release_commit_SHA_full:0:8}
+          fi
+          # Create final URL
+          COMPARE_URL="https://github.com/${upstream_repo}/compare/${previous_release_commit_SHA_short}...${current_release_commit_SHA_short}"
+          echo $COMPARE_URL >> $GITHUB_OUTPUT
+          
       - name: Prepare draft release
         id: draft_release
         uses: softprops/action-gh-release@v2
@@ -34,14 +63,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
           fail_on_unmatched_files: true
-          tag_name: v${{ steps.pr_data.outputs.VERSION }}
+          tag_name: v${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}
           draft: true
           prerelease: false
           make_latest: true
           body: |
             Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-demand.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
             ### Changelog
-            Cf. upstream release note: ${{ steps.pr_data.outputs.URL }}
+            Cf. upstream release note: ${{ steps.diff_url.outputs.COMPARE_URL }}
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
@@ -57,10 +86,12 @@ jobs:
           message: 'Update release in manifest'
           add: 'manifest.toml'
 
-      - name: Comment PR
-        uses: thollander/actions-comment-pull-request@v1
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
         with:
-          message: |
+          commit-message: 'Update release in manifest'
+          branch: testing
+          title: 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}'
+          body: |
             Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}
             - [ ] Make sure the release is published before testing this PR.
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
