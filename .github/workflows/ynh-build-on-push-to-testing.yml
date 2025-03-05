@@ -27,7 +27,7 @@ jobs:
         id: diff_url
         run: | 
           # Get previous manifest version 
-          wget -O previous_manifest.toml "https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/master/manifest.toml"
+          wget --quiet --output-document=previous_manifest.toml "https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/master/manifest.toml"
           # Extract URL
           previous_upstream_url=$(grep -A 5 "resources.sources.upstream" manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)
           # Extract upstream repo path
