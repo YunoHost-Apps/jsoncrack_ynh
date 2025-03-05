@@ -28,7 +28,7 @@ jobs:
           # Get previous manifest version 
           wget --quiet --output-document=previous_manifest.toml "https://raw.githubusercontent.com/${{ github.repository }}/refs/heads/master/manifest.toml"
           # Extract URL
-          previous_upstream_url=$(grep -A 5 "resources.sources.upstream" manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)
+          previous_upstream_url=$(grep -A 5 "resources.sources.upstream" previous_manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)
           # Extract upstream repo path
           upstream_repo="${previous_upstream_url#https://github.com/}"
           upstream_repo="${upstream_repo%/archive*}"
