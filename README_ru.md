@@ -29,7 +29,7 @@ JSON Crack is a tool for visualizing JSON, YAML, CSV, XML, and TOML data in inte
 - Privacy: All data processing is performed client-side; nothing is stored on the server.
 
 
-**Поставляемая версия:** 2024.12.12~ynh8
+**Поставляемая версия:** 2024.12.12~ynh9
 
 **Демо-версия:** <https://jsoncrack.com/editor>
 
