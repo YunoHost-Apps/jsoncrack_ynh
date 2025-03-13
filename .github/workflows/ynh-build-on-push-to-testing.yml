@@ -46,16 +46,10 @@ jobs:
               /sha256/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|
           }' manifest.toml
 
-      - name: Commit changes to manifest.toml
-        uses: EndBug/add-and-commit@v9
-        with:
-          default_author: github_actions
-          message: 'Update release in manifest'
-          add: 'manifest.toml'
-
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
+          add-paths: manifest.toml
           commit-message: 'Update release in manifest'
           base: master
           branch: testing
