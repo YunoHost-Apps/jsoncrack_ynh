@@ -11,12 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Parse data from PR
-        id: pr_data
-        run: |
-          echo "VERSION=$(echo ${${{ github.event.pull_request.body }}#*\` v} | cut -d':' -f1)" >> "$GITHUB_OUTPUT"
-          echo "URL=$(echo ${{github.event.pull_request.body}} | grep -o 'http[s]\?://[^ ]\+' | head -1)" >> "$GITHUB_OUTPUT"
-
       - name: Checkout repo
         uses: actions/checkout@v4
 
@@ -38,7 +32,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
           fail_on_unmatched_files: true
-          tag_name: v${{ steps.pr_data.outputs.VERSION }}
+          tag_name: ${{ steps.pr_data.outputs.YNH_RELEASE_VERSION }}
           draft: true
           prerelease: false
           make_latest: true

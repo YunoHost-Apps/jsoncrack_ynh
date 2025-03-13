@@ -29,7 +29,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
           fail_on_unmatched_files: true
-          tag_name: v${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}
+          tag_name: ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}
           draft: true
           prerelease: false
           make_latest: true
