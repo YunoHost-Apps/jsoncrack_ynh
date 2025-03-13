@@ -49,10 +49,10 @@ jobs:
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
-          sed -i -e '|\[resources.sources.ynh_build\]|,|sha256|!b' \
-              -i -e '|url|s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_URL }}"|' \
-              -i -e '|sha256|s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|' \
-              manifest.toml
+          sed -i '/\[resources.sources.ynh_build\]/,/sha256/ {
+              /url/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_URL }}"|
+              /sha256/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|
+          }' manifest.toml
 
       - name: Commit changes to manifest.toml
         uses: EndBug/add-and-commit@v9
