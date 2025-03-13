@@ -22,19 +22,20 @@ gh_personal_token=""
 #=================================================
 # DOWNLOAD AND EXTRACT SOURCE
 #=================================================
+full_upstream_path="${upstream_owner}/${upstream_repo}"
 if [[ $source_type == "release" ]]; then
-    last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
-    download_url="https://api.github.com/repos/${upstream_owner}/${upstream_repo}/tarball/${last_upstream_version}"
-    build_folder="${upstream_repo}_${last_upstream_version}" #e.g. jsoncrack_ynh_v3.2.0
+    last_upstream_version=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")") #e.g. v3.2.0 (but format is manually defined by repo upstream authors and could be anything)
+    download_url="https://api.github.com/repos/${full_upstream_repo}/tarball/${last_upstream_version}"
+    build_folder="${upstream_repo}_${last_upstream_version}" #e.g. jsoncrack.com_v3.2.0
     release_version="${last_upstream_version}"
 else
-    last_upstream_version=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1) #e.g. d5f9bfc7fba1f1908863390f16ba28589d84a7d5
+    last_upstream_version=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/commits/${upstream_branch}" | grep -Po "(?<=\"sha\": \").*(?=\")" | head -n 1) #e.g. d5f9bfc7fba1f1908863390f16ba28589d84a7d5
     last_upstream_version_short=${last_upstream_version:0:8}
-    last_date_tag=$(curl --silent "https://api.github.com/repos/${upstream_owner}/${upstream_repo}/commits/${upstream_branch}" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
+    last_date_tag=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/commits/${upstream_branch}" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
     last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
-    download_url="https://github.com/${upstream_owner}/${upstream_repo}/archive/${last_upstream_version}.tar.gz"
+    download_url="https://github.com/${full_upstream_path}/archive/${last_upstream_version}.tar.gz"
     build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
-    release_version="{$last_upstream_version_short}"
+    release_version="${build_folder#${upstream_repo}_}"
 fi
 curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
@@ -51,10 +52,10 @@ pushd "$build_folder"
     sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                    # Remove call for premium when executed not from official domain
     sed -i '/if (aboveSupportedLimit) {/,/}/d' "./src/features/editor/views/GraphView/index.tsx"                         # Remove call for premium when reaching a graph limitation (full block to avoid compilation error)
     sed -i '/SUPPORTED_LIMIT/d' "./src/features/editor/views/GraphView/index.tsx"                                        # Remove call for premium when reaching a graph limitation (var declaration to avoid compilation error) 
-    sed -i 's/maxSize={300/maxSize={100000/g' "./src/features/editor/FullscreenDropzone.tsx"                             # Extend file size upload limitation
-    sed -i 's/(Max file size: 300 KB)/(Max file size: 100 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"          # Extend file size upload limitation
-    sed -i 's/maxSize={500/maxSize={100000/g' "./src/features/modals/ImportModal/index.tsx"                              # Extend file size upload limitation
-    sed -i 's/(Max 500 KB)/(Max 100 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                 # Extend file size upload limitation
+    sed -i 's/maxSize={300/maxSize={1024/g' "./src/features/editor/FullscreenDropzone.tsx"                               # Extend file size upload limitation
+    sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"            # Extend file size upload limitation
+    sed -i 's/maxSize={500/maxSize={1024/g' "./src/features/modals/ImportModal/index.tsx"                                # Extend file size upload limitation
+    sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                   # Extend file size upload limitation
     
     # Prepare $domain$path replacement
     sed -i '/const config =/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
@@ -125,12 +126,48 @@ pushd "$build_folder"
 popd
 ynh_release_SHA=$(sha256sum ${ynh_release_filename} | cut -d' ' -f1)
 ynh_release_URL="https://github.com/${ynh_owner}/${ynh_repo}/releases/download/${release_version}/${ynh_release_filename}"
+ynh_release_version="${release_version#${upstream_repo}_}" #e.g. v3.2.0 (release source) OR v2024.11.19-d5f9bfc7 (commit source)
 
 #=================================================
 # CLEAN BUILD FOLDER
 #=================================================
 rm -r "${build_folder}"
 rm "${build_folder}.tar.gz"
+
+#=================================================
+# GENERATE DIFF COMPARE URL
+#=================================================
+
+# Get previous manifest version
+curl --silent --output previous_manifest.toml "https://raw.githubusercontent.com/${full_upstream_path}/refs/heads/master/manifest.toml"
+
+# Extract previous upstream source URL
+previous_upstream_url="$(grep -A 5 'resources.sources.upstream' previous_manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)"
+rm previous_manifest.toml
+
+# Get previous commit SHA-1 string 
+previous_upstream_filename=${previous_upstream_url##*/}
+previous_upstream_filename=${previous_upstream_filename%.tar.gz}
+previous_upstream_filename=${previous_upstream_filename%.zip}
+if [[ "$previous_upstream_filename" =~ ^[0-9a-f]{40}$ ]] #check if it is a SHA-1 string or a tag
+then 
+previous_release_commit_SHA_full=${previous_upstream_filename}
+else
+previous_release_commit_SHA_full=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/git/refs/tags/" | jq -r ".[] | select(.ref==\"refs/tags/${previous_upstream_filename}\") | .object.sha") 
+fi
+previous_release_commit_SHA_short=${previous_release_commit_SHA_full:0:8}
+
+# Get current commit SHA-1 string
+if [[ "$ynh_release_version" =~ ^v[0-9]{4}\.[0-9]{2}\.[0-9]{2}-[0-9a-f]{8}$ ]] #check if it has commit (predictable) or release (unpredictable) format.
+then
+current_release_commit_SHA_short=${ynh_release_version##*-}
+else
+current_release_commit_SHA_full=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/git/refs/tags/" | jq -r ".[] | select(.ref==\"refs/tags/${ynh_release_version}\") | .object.sha") 
+current_release_commit_SHA_short=${current_release_commit_SHA_full:0:8}
+fi
+
+# Create final URL
+ynh_release_diff_url="https://github.com/${full_upstream_path}/compare/${previous_release_commit_SHA_short}...${current_release_commit_SHA_short}"
 
 #=================================================
 # UPLOAD RELEASE
@@ -147,7 +184,7 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
     then
         ## Make a draft release json with a markdown body
         release='"tag_name": "'$last_upstream_version'", "target_commitish": "master", "name": "'$last_upstream_version'", '
-        body="${upstream_repo^} prebuilt archive for ${ynh_repo}\\n=========\\nPlease refer to upstream ${upstream_repo^} project for the change : https://github.com/$upstream_owner/$upstream_repo/releases\\n\\nSha256sum : $sha256sumarchive"
+        body="${upstream_repo^} prebuilt archive for ${ynh_repo}\\n=========\\nPlease refer to upstream ${upstream_repo^} project for the change : https://github.com/$full_upstream_path/releases\\n\\nSha256sum : $sha256sumarchive"
         body=\"$body\"
         body='"body": '$body', '
         release=$release$body
@@ -220,6 +257,8 @@ else
         echo "YNH_RELEASE_FILE=${ynh_release_filename}" >> $GITHUB_OUTPUT
         echo "YNH_RELEASE_SHA=${ynh_release_SHA}" >> $GITHUB_OUTPUT
         echo "YNH_RELEASE_URL=${ynh_release_URL}" >> $GITHUB_OUTPUT
+        echo "YNH_RELEASE_VERSION=${ynh_release_version}" >> $GITHUB_OUTPUT
+        echo "YNH_RELEASE_DIFF_COMPARE_URL=${ynh_release_diff_url}" >> $GITHUB_OUTPUT
     fi #export var for Github Workflow
     echo "Build completed but not uploaded - missing Github Token"
     set +x 
