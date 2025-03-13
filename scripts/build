@@ -34,7 +34,7 @@ else
     last_date_tag=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/commits/${upstream_branch}" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
     last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
     download_url="https://github.com/${full_upstream_path}/archive/${last_upstream_version}.tar.gz"
-    build_folder="${upstream_repo}_v${last_date_tag_short}_${last_upstream_version_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
+    build_folder="${upstream_repo}_v${last_date_tag_short}-${last_upstream_version_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
     release_version="${build_folder#${upstream_repo}_}"
 fi
 curl -LJ $download_url --output "${build_folder}.tar.gz"
@@ -137,9 +137,8 @@ rm "${build_folder}.tar.gz"
 #=================================================
 # GENERATE DIFF COMPARE URL
 #=================================================
-
 # Get previous manifest version
-curl --silent --output previous_manifest.toml "https://raw.githubusercontent.com/${full_upstream_path}/refs/heads/master/manifest.toml"
+curl --silent --output previous_manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/master/manifest.toml"
 
 # Extract previous upstream source URL
 previous_upstream_url="$(grep -A 5 'resources.sources.upstream' previous_manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)"
@@ -149,7 +148,7 @@ rm previous_manifest.toml
 previous_upstream_filename=${previous_upstream_url##*/}
 previous_upstream_filename=${previous_upstream_filename%.tar.gz}
 previous_upstream_filename=${previous_upstream_filename%.zip}
-if [[ "$previous_upstream_filename" =~ ^[0-9a-f]{40}$ ]] #check if it is a SHA-1 string or a tag
+if [[ "$previous_upstream_filename" =~ ^[0-9a-f]{40}$ ]] #check if filename is a SHA-1 string or a tag
 then 
 previous_release_commit_SHA_full=${previous_upstream_filename}
 else
