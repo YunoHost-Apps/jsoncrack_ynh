@@ -60,3 +60,5 @@ jobs:
             - [ ] Rename PR title with appropriate version number.
            '
           fi 
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
