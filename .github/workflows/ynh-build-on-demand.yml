@@ -45,14 +45,17 @@ jobs:
               /sha256/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|
           }' manifest.toml
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          add-paths: manifest.toml
-          commit-message: 'Update release in manifest'
-          base: master
-          branch: testing
-          title: 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}'
-          body: |
+      - name: Create pull request
+        run: |
+          CURRENT_BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          PR_URL="$(gh pr list --head "${CURRENT_BRANCH_NAME}" --state open --json url --jq .[].url)"
+          if [[ -n "${PR_URL}" ]]; then
+            echo "PR already exists for the current branch -> ${PR_URL}"
+            exit 0
+          else
+            gh pr create --base master --head testing --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body '
             Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}
             - [ ] Make sure the release is published before testing this PR.
+            - [ ] Rename PR title with appropriate version number.
+           '
+          fi 
