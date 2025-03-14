@@ -45,19 +45,20 @@ jobs:
               /sha256/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|
           }' manifest.toml
 
-      - name: Create pull request
+      - name: Create pull request or update existing one
         run: |
           CURRENT_BRANCH_NAME=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          PR_URL="$(gh pr list --head "${CURRENT_BRANCH_NAME}" --state open --json url --jq .[].url)"
+          PR_URL="$(gh pr list --head ${CURRENT_BRANCH_NAME} --state open --json url --jq .[].url)"
+          PR_BODY="Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}\n
+          - [ ] Make sure the release is published before testing this PR.\n
+          - [ ] Rename PR title with appropriate version number.\n
+          "
           if [[ -n "${PR_URL}" ]]; then
-            echo "PR already exists for the current branch -> ${PR_URL}"
+            echo "Editing already existing PR for the current branch -> ${PR_URL}"
+            echo -e $PR_BODY | gh pr edit --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
             exit 0
           else
-            gh pr create --base master --head testing --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body '
-            Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}
-            - [ ] Make sure the release is published before testing this PR.
-            - [ ] Rename PR title with appropriate version number.
-           '
+            echo -e $PR_BODY | gh pr create --base master --head ${CURRENT_BRANCH_NAME} --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
           fi 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
