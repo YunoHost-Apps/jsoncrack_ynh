@@ -37,7 +37,7 @@ jobs:
           body: |
             Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-push-to-testing.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
             ### Changelog
-            Cf. upstream release note: ${{ steps.diff_url.outputs.COMPARE_URL }}
+            Cf. upstream release note: ${{ steps.diff_url.outputs.YNH_RELEASE_DIFF_COMPARE_URL }}
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
