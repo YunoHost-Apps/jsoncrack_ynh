@@ -58,7 +58,6 @@ jobs:
           PR_URL="$(gh pr list --head ${CURRENT_BRANCH_NAME} --state open --json url --jq .[].url)"
           PR_BODY="Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}\n
           - [ ] Make sure the release is published before testing this PR.\n
-          - [ ] Rename PR title with appropriate version number.\n
           "
           if [[ -n "${PR_URL}" ]]; then
             echo "Editing already existing PR for the current branch -> ${PR_URL}"
