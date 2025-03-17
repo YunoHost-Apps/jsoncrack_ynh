@@ -11,14 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Parse data from PR
-        id: pr_data
-        run: |
-          echo "VERSION=$(echo ${${{ github.event.pull_request.body }}#*\` v} | cut -d':' -f1)" >> "$GITHUB_OUTPUT"
-          echo "URL=$(echo ${{github.event.pull_request.body}} | grep -o 'http[s]\?://[^ ]\+' | head -1)" >> "$GITHUB_OUTPUT"
-
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }} # required for action add-and-commit below, cf. https://github.com/EndBug/add-and-commit#working-with-prs
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -38,7 +34,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
           fail_on_unmatched_files: true
-          tag_name: v${{ steps.pr_data.outputs.VERSION }}
+          tag_name: ${{ steps.pr_data.outputs.YNH_RELEASE_VERSION }}
           draft: true
           prerelease: false
           make_latest: true
@@ -49,10 +45,10 @@ jobs:
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
-          sed -i -e '|\[resources.sources.ynh_build\]|,|sha256|!b' \
-              -i -e '|url|s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_URL }}"|' \
-              -i -e '|sha256|s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|' \
-              manifest.toml
+          sed -i '/\[resources.sources.ynh_build\]/,/sha256/ {
+              /url/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_URL }}"|
+              /sha256/s|=.*$|= "${{ steps.build_release.outputs.YNH_RELEASE_SHA }}"|
+          }' manifest.toml
 
       - name: Commit changes to manifest.toml
         uses: EndBug/add-and-commit@v9
