@@ -44,7 +44,7 @@ tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
 # Adapt for YNH context and remove calls for upgrading to premium (support encouraged via 'fund' parameter in the manifest.toml)
 pushd "$build_folder"
     # Remove calls to premium
-    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/UpgradeModal/d}' "./src/features/editor/Toolbar/index.tsx"        # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='todiagram.com'). 
+    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/todiagram.com/d}' "./src/features/editor/Toolbar/index.tsx"       # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='todiagram.com').
     sed -i '/setVisible/d' "./src/features/editor/Toolbar/index.tsx"                                                     # Remove now unused var
     sed -i 's/Cookie.get("upgrade_shown")/true/g' "./src/pages/editor.tsx"                                               # Remove call for premium when opened for the first time or after cookie expiry. --> EDIT: Should not be necessary anymore since that commit: https://github.com/AykutSarac/jsoncrack.com/commit/d614bf9d67fabe7c8110027442dd76ee05ba6be2 
     sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                    # Remove call for premium when executed not from official domain
