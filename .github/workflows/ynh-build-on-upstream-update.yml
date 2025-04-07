@@ -13,8 +13,8 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }} # required for action add-and-commit below, cf. https://github.com/EndBug/add-and-commit#working-with-prs
+        #with:
+        #  ref: ${{ github.event.pull_request.head.ref }} # required for action add-and-commit below, cf. https://github.com/EndBug/add-and-commit#working-with-prs
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
