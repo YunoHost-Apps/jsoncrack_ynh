@@ -61,7 +61,7 @@ jobs:
           - [ ] Make sure the release is published before testing this PR.\n
           "
           if [[ -n "${PR_URL}" ]]; then
-            OLD_PR_BODY="$(gh pr view $PR_URL --json body)"
+            OLD_PR_BODY="$(gh pr view $PR_URL --json body --jq .body)"
             if [[ -n "${OLD_PR_BODY}" ]]; then
                 # Append new body to old body if the latter is not empty
                 PR_BODY="${OLD_PR_BODY}\n\n---\n${PR_BODY}"
