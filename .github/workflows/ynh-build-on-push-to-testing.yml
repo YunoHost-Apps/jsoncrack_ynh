@@ -61,9 +61,11 @@ jobs:
           - [ ] Make sure the release is published before testing this PR.\n
           "
           if [[ -n "${PR_URL}" ]]; then
-            # Append new body to old body and replace title
             OLD_PR_BODY="$(gh pr view $PR_URL --json body)"
-            PR_BODY="${OLD_PR_BODY}\n---\n${PR_BODY}"
+            if [[ -n "${OLD_PR_BODY}" ]]; then
+                # Append new body to old body if the latter is not empty
+                PR_BODY="${OLD_PR_BODY}\n\n---\n${PR_BODY}"
+            fi
             echo "Editing already existing PR for the current branch -> ${PR_URL}"
             echo -e $PR_BODY | gh pr edit --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
             exit 0
