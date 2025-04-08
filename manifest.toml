@@ -5,7 +5,7 @@ name = "JSON Crack"
 description.en = "Data visualization app for JSON, YAML, XML, CSV formats and more"
 description.fr = "Application de visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
-version = "2025.04.06~ynh1"
+version = "2025.04.06~ynh2"
 
 maintainers = ["oleole39"]
 
