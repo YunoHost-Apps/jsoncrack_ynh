@@ -55,8 +55,8 @@ ram.runtime = "0M"
         autoupdate.strategy = "latest_github_commit"
 
         [resources.sources.ynh_build]
-        url = "https://github.com/Yunohost-Apps/jsoncrack_ynh/releases/download/v2025.04.06-2925b9d2/jsoncrack.com_v2025.04.06-2925b9d2_ynh.zip"
-        sha256 = "ebf0a9e45dd1e3de48f6bf375b4aaa49d5d0fbd2eb80f096c5bf3751e9a2c93a"
+        url = "https://github.com/YunoHost-Apps/jsoncrack_ynh/releases/download/v2025.04.09-d496738d/jsoncrack.com_v2025.04.09-d496738d_ynh.zip"
+        sha256 = "c78dc6eaef25c9d6c692ced325ceb6aa9360ecfd15033b65b1c45528304e2a3f"
         format = "zip"
         extract = true
         in_subdir = true
