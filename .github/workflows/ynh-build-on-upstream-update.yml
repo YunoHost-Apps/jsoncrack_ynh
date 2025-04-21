@@ -14,7 +14,6 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          #ref: ${{ github.event.pull_request.head.ref }} # required for action add-and-commit below, cf. https://github.com/EndBug/add-and-commit#working-with-prs
           ref: ${{ github.head_ref }} # required for action add-and-commit below, cf. https://github.com/EndBug/add-and-commit#working-with-prs
 
       - name: Setup Node.js
@@ -28,6 +27,12 @@ jobs:
           chmod +x scripts/build
           ./scripts/build
 
+      - name: Extract changelog's URL from pull request's body
+        id: changelog_url
+        run : | 
+          URL=$(echo "${{ event.pull_request.body }}" | grep -o 'http[s]\?://[^ ]\+' | head -1)
+          echo "YNH_CHANGELOG_URL=${URL}" >> $GITHUB_OUTPUT
+
       - name: Prepare draft release
         id: draft_release
         uses: softprops/action-gh-release@v2
@@ -35,14 +40,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: ${{ steps.build_release.outputs.YNH_RELEASE_FILE }}
           fail_on_unmatched_files: true
-          tag_name: ${{ steps.pr_data.outputs.YNH_RELEASE_VERSION }}
+          tag_name: ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}
           draft: true
           prerelease: false
           make_latest: true
           body: |
             Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-upstream-update.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
             ### Changelog
-            Cf. upstream release note: ${{ steps.pr_data.outputs.URL }}
+            Cf. upstream release note: ${{ steps.changelog_url.outputs.YNH_CHANGELOG_URL }}
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
