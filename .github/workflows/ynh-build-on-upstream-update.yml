@@ -30,7 +30,7 @@ jobs:
       - name: Extract changelog's URL from pull request's body
         id: changelog_url
         run : | 
-          URL=$(echo "${{ event.pull_request.body }}" | grep -o 'http[s]\?://[^ ]\+' | head -1)
+          URL=$(echo "${{ github.event.pull_request.body }}" | grep -o 'http[s]\?://[^ ]\+' | head -1)
           echo "YNH_CHANGELOG_URL=${URL}" >> $GITHUB_OUTPUT
 
       - name: Prepare draft release
