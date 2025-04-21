@@ -68,5 +68,7 @@ jobs:
         with:
           message: |
             Upstream upgrade is now built for YNH and ready to be released in the current repository: ${{ steps.draft_release.outputs.url }}
-            - [ ] Make sure the release is published before testing this PR.
+            - [ ] Check that upstream upgrade is not likely to break the build script (or edit build script and relaunch app build using the "on-demand" workflow)
+            - [ ] Make sure the built release is published before testing this PR.
+            You may find additional information about this app upgrade's process in the repository's wiki.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
