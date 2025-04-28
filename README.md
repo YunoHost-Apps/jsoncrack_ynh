@@ -4,14 +4,14 @@ It shall NOT be edited by hand.
 -->
 
 <h1>
-  <img src="https://raw.githubusercontent.com/YunoHost/apps/master/logos/jsoncrack.png" width="32px" alt="Logo of JSON Crack">
+  <img src="https://raw.githubusercontent.com/YunoHost/apps/main/logos/jsoncrack.png" width="32px" alt="Logo of JSON Crack">
   JSON Crack, packaged for YunoHost
 </h1>
 
 Data visualization app for JSON, YAML, XML, CSV formats and more
 
 [![App Demo](https://img.shields.io/badge/App_Demo-blue?style=for-the-badge)](https://jsoncrack.com/editor)
-![Version: 2025.04.17~ynh1](https://img.shields.io/badge/Version-2025.04.17~ynh1-rgba(0,150,0,1)?style=for-the-badge)
+[![Version: 2025.04.24~ynh1](https://img.shields.io/badge/Version-2025.04.24~ynh1-rgba(0,150,0,1)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
 
 <div align="center">
 <a href="https://apps.yunohost.org/app/jsoncrack"><img height="100px" src="https://github.com/YunoHost/yunohost-artwork/raw/refs/heads/main/badges/neopossum-badges/badge_more_info_on_the_appstore.svg"/></a>
