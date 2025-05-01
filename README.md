@@ -8,7 +8,7 @@ It shall NOT be edited by hand.
   JSON Crack, packaged for YunoHost
 </h1>
 
-Data visualization app for JSON, YAML, XML, CSV formats and more
+Data visualization for JSON, YAML, XML, CSV formats and more
 
 [![App Demo](https://img.shields.io/badge/App_Demo-blue?style=for-the-badge)](https://jsoncrack.com/editor)
 [![Version: 2025.04.24~ynh1](https://img.shields.io/badge/Version-2025.04.24~ynh1-rgba(0,150,0,1)?style=for-the-badge)](https://ci-apps.yunohost.org/ci/apps/jsoncrack/)
