@@ -2,8 +2,8 @@ packaging_format = 2
 
 id = "jsoncrack"
 name = "JSON Crack"
-description.en = "Data visualization app for JSON, YAML, XML, CSV formats and more"
-description.fr = "Application de visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
+description.en = "Data visualization for JSON, YAML, XML, CSV formats and more"
+description.fr = "Visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
 version = "2025.04.24~ynh1"
 
@@ -21,12 +21,14 @@ not-totally-free-upstream.en = "Free license valid for private and non-commercia
 not-totally-free-upstream.fr = "Licence libre valable uniquement pour les usages privé et non commerciaux"
 
 [integration]
-yunohost = ">= 11.2.30"
+yunohost = ">= 12.0.9"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
+
 ldap = false
 sso = false
+
 disk = "20M"
 ram.build = "0M"
 ram.runtime = "0M"
