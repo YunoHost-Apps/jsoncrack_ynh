@@ -10,15 +10,11 @@ version = "2025.05.01~ynh1"
 maintainers = ["oleole39"]
 
 [upstream]
-license = "LicenseRef-MIT-WITH-Commons-Clause-restriction"
+license = "Apache-2.0"
 demo = "https://jsoncrack.com/editor"
 code = "https://github.com/AykutSarac/jsoncrack.com"
 fund = "https://github.com/sponsors/AykutSarac"
 userdoc = "https://jsoncrack.com/docs"
-
-[antifeatures]
-not-totally-free-upstream.en = "Free license valid for private and non-commercial use only"
-not-totally-free-upstream.fr = "Licence libre valable uniquement pour les usages privé et non commerciaux"
 
 [integration]
 yunohost = ">= 12.0.9"
