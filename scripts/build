@@ -25,7 +25,7 @@ gh_personal_token=""
 full_upstream_path="${upstream_owner}/${upstream_repo}"
 if [[ $source_type == "release" ]]; then
     last_upstream_version=$(curl --silent "https://api.github.com/repos/${full_upstream_path}/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")") #e.g. v3.2.0 (but format is manually defined by repo upstream authors and could be anything)
-    download_url="https://api.github.com/repos/${full_upstream_repo}/tarball/${last_upstream_version}"
+    download_url="https://api.github.com/repos/${full_upstream_path}/tarball/${last_upstream_version}"
     build_folder="${upstream_repo}_${last_upstream_version}" #e.g. jsoncrack.com_v3.2.0
     release_version="${last_upstream_version}"
 else
