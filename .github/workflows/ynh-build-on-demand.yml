@@ -44,9 +44,9 @@ jobs:
             ### Changelog
             Cf. upstream release note: ${{ steps.diff_url.outputs.YNH_RELEASE_DIFF_COMPARE_URL }}
             ### Build statistics
-            - Execution time ([hh:]mm:ss): ${{ steps.build_release.outputs.BUILD_TIME }}
+            - Execution time ([hh:m]m:ss): ${{ steps.build_release.outputs.BUILD_TIME }}
             - Peak RAM use (GB): ${{ steps.build_release.outputs.PEAK_RAM_USE_GB }}
-            - Peak disk space use (GB): ${{ steps.build_release.outputs.BUILD_STORAGE_USE }}
+            - Disk space use (GB): ${{ steps.build_release.outputs.BUILD_STORAGE_USE }} (or excluding the build framework's installation: ${{ steps.build_release.outputs.BUILD_STORAGE_USE_EXCL_FRAMEWORK }})
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |

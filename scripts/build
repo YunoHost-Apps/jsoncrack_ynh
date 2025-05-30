@@ -147,6 +147,7 @@ fi
 curl -LJ $download_url --output "${build_folder}.tar.gz"
 mkdir "$build_folder"
 tar --strip-components=1 -xvf "${build_folder}.tar.gz" -C "./${build_folder}/"
+storage_extract_source=$(used_disk_space_in_gb)
 
 #=================================================
 # SOURCE CUSTOMIZATION
@@ -156,6 +157,7 @@ pushd "$build_folder"
     # Execute source customizations commands (if any)
     ynh_optional_source_customizations
 popd
+storage_source_customization=$(used_disk_space_in_gb)
 
 #=================================================
 # INSTALL BUILD FRAMEWORK
@@ -172,6 +174,8 @@ if [ "$framework" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_ve
     # Instlal required NodeJS version 
     source ~/.nvm/nvm.sh install $build_nodejs_version
 fi
+
+storage_install_build_framework=$(used_disk_space_in_gb)
 
 #=================================================
 # BUILD FROM SOURCE
@@ -191,10 +195,12 @@ popd
 ynh_release_SHA=$(sha256sum ${ynh_release_filename} | cut -d' ' -f1)
 ynh_release_URL="https://github.com/${ynh_owner}/${ynh_repo}/releases/download/${release_version}/${ynh_release_filename}"
 ynh_release_version="${release_version#${upstream_repo}_}" #e.g. v3.2.0 (release source) OR v2024.11.19-d5f9bfc7 (commit source)
-
 storage_end=$(used_disk_space_in_gb)
+
+# Compute disk usage statistics
 total_storage_used=$((storage_end-storage_start))
-echo "Total disk space used after build: $total_storage_used GB"
+total_storage_used_without_framework=$((storage_end-storage_install_build_framework+storage_source_customization))
+echo "Total disk space used after build: $total_storage_used GB (or $total_storage_used_without_framework GB without $framework)"
 
 # Clean build folder
 rm -r "${build_folder}"
@@ -314,6 +320,7 @@ if [[ $GITHUB_OUTPUT ]]; then
     echo "YNH_RELEASE_VERSION=${ynh_release_version}" >> $GITHUB_OUTPUT
     echo "YNH_RELEASE_DIFF_COMPARE_URL=${ynh_release_diff_url}" >> $GITHUB_OUTPUT
     echo "BUILD_STORAGE_USE=${total_storage_used}" >> $GITHUB_OUTPUT
+    echo "BUILD_STORAGE_USE_EXCL_FRAMEWORK=${total_storage_used_without_framework}" >> $GITHUB_OUTPUT
     
     conclusion_msg="Build completed - continuing with the workflow's next step."
 fi
