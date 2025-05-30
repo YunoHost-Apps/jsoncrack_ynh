@@ -110,7 +110,7 @@ function used_disk_space_in_gb {
 
 # Start tracing for debug output
 set -x
-storage_start=$(function used_disk_space_in_gb)
+storage_start=$(used_disk_space_in_gb)
 
 #=================================================
 # VARIABLES
@@ -192,7 +192,7 @@ ynh_release_SHA=$(sha256sum ${ynh_release_filename} | cut -d' ' -f1)
 ynh_release_URL="https://github.com/${ynh_owner}/${ynh_repo}/releases/download/${release_version}/${ynh_release_filename}"
 ynh_release_version="${release_version#${upstream_repo}_}" #e.g. v3.2.0 (release source) OR v2024.11.19-d5f9bfc7 (commit source)
 
-storage_end=$(function used_disk_space_in_gb)
+storage_end=$(used_disk_space_in_gb)
 total_storage_used=$((storage_end-storage_start))
 echo "Total disk space used after build: $total_storage_used GB"
 
