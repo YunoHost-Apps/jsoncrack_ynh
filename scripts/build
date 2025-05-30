@@ -8,10 +8,10 @@
 #=================================================
 
 #=================================================
-# SECTION TO EDIT MANUALLY
+# SECTION TO EDIT
 #=================================================
 
-function ynh_manually_defined_package_variables{
+function ynh_manually_defined_package_variables {
     #=================================================
     # VARIABLES TO DEFINE MANUALLY (REQUIRED)
     #=================================================
@@ -25,7 +25,7 @@ function ynh_manually_defined_package_variables{
     gh_personal_token=""            # [local build only] fill with your GitHub Personal Token if you want to upload the release to GitHub after build - cf. https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
 }
 
-function ynh_optional_source_customizations{
+function ynh_optional_source_customizations {
     #=================================================
     # SOURCE CUSTOMIZATION COMMANDS (OPTIONAL)
     #=================================================
@@ -80,7 +80,7 @@ function ynh_optional_source_customizations{
     rm "./sentry.edge.config.ts"
 }
 
-function ynh_build_instructions{
+function ynh_build_instructions {
     #=================================================
     # BUILD INSTRUCTIONS (REQUIRED)
     #=================================================
