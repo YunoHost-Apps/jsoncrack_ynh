@@ -22,7 +22,7 @@ jobs:
           cat $build_log
           # Exports stats (BUILD_STORAGE_USE is already exported within the previous script)
           build_stats=$(cat $build_log | tail -n 1 | grep "##Stats##")
-          build_time=$(echo $build_stats | cut -d"|" -f2 | cut -d" " -f2)
+          build_time=$(echo $build_stats | cut -d"|" -f2 | cut -d" " -f2 | cut -d"." -f1)
           build_ram_use_kb=$(echo $build_stats | cut -d"|" -f3 | cut -d":" -f2)
           build_ram_use_gb=$(LC_NUMERIC="en_US.UTF-8" printf '%.3f\n' $(echo "$build_ram_use_kb/1024/1024" | bc -l))
           echo "BUILD_TIME=${build_time}" >> $GITHUB_OUTPUT
@@ -44,9 +44,9 @@ jobs:
             ### Changelog
             Cf. upstream release note: ${{ steps.diff_url.outputs.YNH_RELEASE_DIFF_COMPARE_URL }}
             ### Build statistics
-            - Execution time: ${{ steps.build_release.outputs.BUILD_TIME }}
-            - Peak RAM use: ${{ steps.build_release.outputs.PEAK_RAM_USE_GB }}
-            - Peak disk space use: ${{ steps.build_release.outputs.BUILD_STORAGE_USE }}
+            - Execution time ([hh:]mm:ss): ${{ steps.build_release.outputs.BUILD_TIME }}
+            - Peak RAM use (GB): ${{ steps.build_release.outputs.PEAK_RAM_USE_GB }}
+            - Peak disk space use (GB): ${{ steps.build_release.outputs.BUILD_STORAGE_USE }}
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
