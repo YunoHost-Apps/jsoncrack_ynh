@@ -127,6 +127,7 @@ ynh_manually_defined_package_variables
 
 # Parse manifest automatically
 curl --silent --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/master/manifest.toml"
+manifest_version="$(grep '^version' ynh-manifest.toml | cut -d'"' -f2)"
 upstream_url="$(grep -A 5 'resources.sources.main' ynh-manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)"
 rm ynh-manifest.toml
 
@@ -182,6 +183,11 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
             last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
             download_url="https://github.com/${full_upstream_path}/archive/${upstream_tag}.tar.gz"
         fi
+		last_date_tag_short=$(echo $manifest_version | cut -d"~" -f1)
+        upstream_tag=${upstream_tag##*/}
+        upstream_tag=${upstream_tag%.tar.gz}
+        upstream_tag=${upstream_tag%.zip}
+        upstream_tag_short=${upstream_tag:0:8}
         build_folder="${upstream_repo}_v${last_date_tag_short}-${upstream_tag_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
         release_version="${build_folder#${upstream_repo}_}"
     fi
