@@ -254,7 +254,7 @@ storage_end=$(used_disk_space_in_gb)
 
 # Compute disk usage statistics
 total_storage_used=$((storage_end-storage_start))
-total_storage_used_without_framework=$((storage_end-storage_install_build_framework+storage_source_customization))
+total_storage_used_without_framework=$((storage_end-storage_install_build_framework+storage_source_customization-storage_start))
 echo "Total disk space used after build: $total_storage_used GB (or $total_storage_used_without_framework GB without $framework)"
 
 # Clean build folder
