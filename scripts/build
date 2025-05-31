@@ -152,6 +152,7 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
     upstream_tag="${BASH_REMATCH[7]}"
 
     full_upstream_path="${upstream_owner}/${upstream_repo}"
+    download_url="$upstream_url"
 
     if [[ $upstream_source_type == *"download"* ]]; then
         upstream_source_type="release"
