@@ -156,7 +156,7 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
         upstream_source_type="release"
         if [[ "$upstream_version_source" == "latest" ]]; then
             upstream_releases_json_url="https://api.github.com/repos/${full_upstream_path}/releases"
-            upstream_tag=$(curl --silent "$upstream_releases_json_url" | | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name') | head -n 1 #e.g. v3.2.0 (but format is manually defined by repo upstream authors and could be anything)
+            upstream_tag=$(curl --silent "$upstream_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name') | head -n 1 #e.g. v3.2.0 (but format is manually defined by repo upstream authors and could be anything)
             download_url="https://api.github.com/repos/${full_upstream_path}/tarball/${upstream_tag}"
         fi
         build_folder="${upstream_repo}_${upstream_tag}" #e.g. jsoncrack.com_v3.2.0
