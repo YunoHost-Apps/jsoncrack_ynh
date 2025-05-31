@@ -42,7 +42,7 @@ jobs:
           body: |
             Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-demand.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
             ### Changelog
-            Cf. upstream release note: ${{ steps.diff_url.outputs.YNH_RELEASE_DIFF_COMPARE_URL }}
+            Cf. upstream release note: ${{ steps.build_release.outputs.YNH_RELEASE_CHANGELOG_URL }}
             ### Build statistics
             - Execution time ([hh:m]m:ss): ${{ steps.build_release.outputs.BUILD_TIME }}
             - Peak RAM use (GB): ${{ steps.build_release.outputs.PEAK_RAM_USE_GB }}
