@@ -146,7 +146,7 @@ fi
 github_url_regex="^https://(api.)?github.com/(repos/)?([a-zA-Z0-9._-]*)/([a-zA-Z0-9._-]*)/(releases|archive)?/(refs/tags/|download/)?([a-zA-Z0-9._-]*).*$"
 if [[ "$upstream_url" =~ $github_url_regex ]]; then
     upstream_owner="${BASH_REMATCH[3]}"
-    upstream_repo"${BASH_REMATCH[4]}"
+    upstream_repo="${BASH_REMATCH[4]}"
     upstream_source_type="${BASH_REMATCH[6]}"
     upstream_tag="${BASH_REMATCH[7]}"
 
