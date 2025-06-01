@@ -105,8 +105,9 @@ function ynh_build_instructions {
 #=================================================
 # Measure disk space use
 function used_disk_space_in_gb {
-  output=$(df -Ph . | awk 'NR==2 {print $3}')
-  output=${output%G}
+  output="$(df -PhBM . | awk 'NR==2 {print $3}')"
+  output=${output%M}
+  output="$(echo "scale=2; $output / 1024" | bc)"
   echo $output
 }
 
@@ -184,7 +185,7 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
             last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
             download_url="https://github.com/${full_upstream_path}/archive/${upstream_tag}.tar.gz"
         fi
-		last_date_tag_short=$(echo $manifest_version | cut -d"~" -f1)
+        last_date_tag_short=$(echo $manifest_version | cut -d"~" -f1)
         upstream_tag=${upstream_tag##*/}
         upstream_tag=${upstream_tag%.tar.gz}
         upstream_tag=${upstream_tag%.zip}
@@ -274,8 +275,13 @@ if [[ "$upstream_source_type" == "commit" ]]; then #build diff URL (commits hist
         previous_release_commit_SHA_short=${previous_release_commit_SHA_full:0:8}        
     else #history between previous manifest and current manifest
         ynh_releases_json_url="https://api.github.com/repos/${ynh_owner}/${ynh_repo}/releases"
-        previous_upstream_filename=$(curl --silent "$ynh_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name' | head -n 2 | tail -n 1) #e.g. v2025.05.01-9f801cd6
-        previous_release_commit_SHA_short=${previous_upstream_filename: -8}
+        last_yhn_releases_names=$(curl --silent "$ynh_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name' | head -n 2) #get the two last releases names
+        previous_ynh_release_name="$(echo $last_yhn_releases_names | cut -d' ' -f1)"
+        if [[ "$previous_ynh_release_name" == *"$ynh_release_version"* ]]; then #if a release for the same version that has just been built was already published before
+            previous_ynh_release_name="$(echo $last_yhn_releases_names | cut -d' ' -f2)"
+        fi
+        previous_ynh_release_name=${previous_ynh_release_name//\"/} #e.g. v2025.05.01-9f801cd6
+        previous_release_commit_SHA_short=${previous_ynh_release_name: -8}
     fi
 
     # Get current commit SHA-1 string
