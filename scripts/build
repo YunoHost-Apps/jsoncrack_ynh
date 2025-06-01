@@ -107,7 +107,7 @@ function ynh_build_instructions {
 function used_disk_space_in_gb {
   output="$(df -PhBM . | awk 'NR==2 {print $3}')"
   output=${output%M}
-  output="$(echo "scale=2; $output / 1024" | bc)"
+  output="$(echo "scale=2; $output / 1024" | bc | sed "s/^\./0./")"
   echo $output
 }
 
@@ -153,15 +153,14 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
     upstream_tag="${BASH_REMATCH[7]}"
 
     full_upstream_path="${upstream_owner}/${upstream_repo}"
-    download_url="$upstream_url"
 
     if [[ $upstream_source_type == *"download"* ]]; then
         upstream_source_type="release"
         if [[ "$upstream_version_source" == "latest" ]]; then
             upstream_releases_json_url="https://api.github.com/repos/${full_upstream_path}/releases"
             upstream_tag=$(curl --silent "$upstream_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name') | head -n 1 #e.g. v3.2.0 (but format is manually defined by repo upstream authors and could be anything)
-            download_url="https://api.github.com/repos/${full_upstream_path}/tarball/${upstream_tag}"
         fi
+        download_url="https://api.github.com/repos/${full_upstream_path}/tarball/${upstream_tag}"
         build_folder="${upstream_repo}_${upstream_tag}" #e.g. jsoncrack.com_v3.2.0
         release_version="${upstream_tag}"
 
@@ -170,8 +169,8 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
         if [[ "$upstream_version_source" == "latest" ]]; then
             upstream_tags_json_url="https://api.github.com/repos/${full_upstream_path}/tags"
             upstream_tag=$(curl --silent "$upstream_tags_json_url" | grep -Po "(?<=\"tag_name\": \").*(?=\")") #e.g. v3.2.0 (but format is manually defined by repo upstream authors and could be anything)
-            download_url="https://api.github.com/repos/${full_upstream_path}/tarball/refs/tags/${upstream_tag}"
         fi
+        download_url="https://api.github.com/repos/${full_upstream_path}/tarball/refs/tags/${upstream_tag}"
         build_folder="${upstream_repo}_${upstream_tag}" #e.g. jsoncrack.com_v3.2.0
         release_version="${upstream_tag}"
 
@@ -183,8 +182,8 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
             upstream_tag_short=${upstream_tag:0:8}
             last_date_tag=$(curl --silent "$latest_upstream_commit_json_url" | grep -Po "(?<=\"verified_at\": \").*(?=\")" | head -n 1) #e.g. 2024-11-19T18:37:03Z
             last_date_tag_short=$(echo ${last_date_tag:0:10} | sed 's/-/./g') #e.g. 2024.11.19
-            download_url="https://github.com/${full_upstream_path}/archive/${upstream_tag}.tar.gz"
         fi
+        download_url="https://github.com/${full_upstream_path}/archive/${upstream_tag}.tar.gz"
         last_date_tag_short=$(echo $manifest_version | cut -d"~" -f1)
         upstream_tag=${upstream_tag##*/}
         upstream_tag=${upstream_tag%.tar.gz}
@@ -254,8 +253,8 @@ ynh_release_version="${release_version#${upstream_repo}_}" #e.g. v3.2.0 (release
 storage_end=$(used_disk_space_in_gb)
 
 # Compute disk usage statistics
-total_storage_used="$(echo "scale=2; $storage_end - $storage_start" | bc)"
-total_storage_used_without_framework="$(echo "scale=2; $storage_end - $storage_install_build_framework + $storage_source_customization - $storage_start" | bc)"
+total_storage_used="$(echo "scale=2; $storage_end - $storage_start" | bc | sed "s/^\./0./")"
+total_storage_used_without_framework="$(echo "scale=2; $storage_end - $storage_install_build_framework + $storage_source_customization - $storage_start" | bc | sed "s/^\./0./")"
 echo "Total disk space used after build: $total_storage_usedGB (or $total_storage_used_without_framework GB without $framework)"
 
 # Clean build folder
