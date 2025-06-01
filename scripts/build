@@ -254,7 +254,7 @@ ynh_release_version="${release_version#${upstream_repo}_}" #e.g. v3.2.0 (release
 storage_end=$(used_disk_space_in_gb)
 
 # Compute disk usage statistics
-total_storage_used="$(echo "scale=2; $storage_end - storage_start" | bc)"
+total_storage_used="$(echo "scale=2; $storage_end - $storage_start" | bc)"
 total_storage_used_without_framework="$(echo "scale=2; $storage_end - $storage_install_build_framework + $storage_source_customization - $storage_start" | bc)"
 echo "Total disk space used after build: $total_storage_usedGB (or $total_storage_used_without_framework GB without $framework)"
 
