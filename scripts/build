@@ -17,12 +17,12 @@ function ynh_manually_defined_package_variables {
     #=================================================
     ynh_owner="Yunohost-Apps"           # YNH repo owner (it only supports GitHub for now) - e.g. "YunoHost-Apps".
     ynh_repo="jsoncrack_ynh"            # YNH repo name - e.g. "jsoncrack_ynh".
-    upstream_version_source="manifest"  # "manifest" or "latest", will pick the source archive's URL either with the version defined in the manifest.toml or the latest version available at upstream repo.  
-    upstream_branch_name="main"         # name of the upstream branch to get the source from - often "main" or "master".
-    default_build_folder="out"          # the folder where to find the built files after build - often "dist".
-    framework="nodejs"                  # framework that should be installed - currently only "nodejs" or "none" are supported.
+    upstream_version_source="manifest"  # "manifest" or "latest", depending on whether you want to build the version defined in the manifest or the latest available version upstream. For most cases, use "manifest".
+    upstream_branch_name="main"         # Name of the branch of the upstream repo to get the source from - often "main" or "master".
+    default_build_folder="out"          # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
+    framework="nodejs"                  # Framework that should be installed - currently only "nodejs" or "none" are supported.
     build_nodejs_version=20             # NodeJS version to use (if any) for the build.
-    
+
     # Local build only
     gh_personal_token=""                # fill with your GitHub Personal Token if you want to upload the release to GitHub after build - cf. https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
 }
@@ -40,7 +40,7 @@ function ynh_optional_source_customizations {
     sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"            # Extend file size upload limitation
     sed -i 's/maxSize={500/maxSize={1024/g' "./src/features/modals/ImportModal/index.tsx"                                # Extend file size upload limitation
     sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                   # Extend file size upload limitation
-    
+
     # Prepare $domain$path replacement
     sed -i '/const config =/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
     sed -i 's/\/editor/\/__YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
@@ -52,12 +52,12 @@ function ynh_optional_source_customizations {
     sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
     sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
     sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
-    
+
     # Adapt text for YNH context
-    sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename  
-    sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled 
-    sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled 
-    
+    sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename
+    sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled
+    sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled
+
     # Remove Google Analytics (user tracking)
     sed -i '/NEXT_PUBLIC_GA_MEASUREMENT_ID/d' "./.env"
     sed -i '/nextjs-google-analytics/d' "./package.json"
@@ -77,7 +77,7 @@ function ynh_optional_source_customizations {
     sed -i '/@sentry/d' "./next.config.js"
     #~ sed -i '/const sentryConfig/,+14d' "./next.config.js"
     #~ sed -i 's/sentryConfig/bundleAnalyzerConfig/' "./next.config.js"
-    #~ sed -i '/Sentry/d' "./src/data/terms.json" --> Upstream terms page is not used in YNH package at the moment  
+    #~ sed -i '/Sentry/d' "./src/data/terms.json" --> Upstream terms page is not used in YNH package at the moment
     rm "./sentry.client.config.ts"
     rm "./sentry.edge.config.ts"
 }
@@ -95,7 +95,7 @@ function ynh_build_instructions {
 #=================================================
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #=================================================
-# YOU SHOULD NOT NEED TO EDIT WHAT FOLLOWS 
+# YOU SHOULD NOT NEED TO EDIT WHAT FOLLOWS
 #=================================================
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 #=================================================
@@ -193,11 +193,11 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
         build_folder="${upstream_repo}_v${last_date_tag_short}-${upstream_tag_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
         release_version="${build_folder#${upstream_repo}_}"
     fi
-    
-else 
+
+else
     echo "Error - Wrong GitHub URL supplied"
     exit 1
-fi 
+fi
 
 # Download and extract source
 curl -LJ $download_url --output "${build_folder}.tar.gz"
@@ -226,8 +226,8 @@ if [ "$framework" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_ve
     if [ "nvm" != $(command -v nvm) ]; then
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash #Official install script from https://github.com/nvm-sh/nvm#install--update-script
     fi
-    
-    # Install required NodeJS version 
+
+    # Install required NodeJS version
     source ~/.nvm/nvm.sh install $build_nodejs_version
 fi
 
@@ -242,11 +242,11 @@ pushd "$build_folder"
     # Execute build instructions
     ynh_build_instructions
 
-    # Package   
+    # Package
     mv "${default_build_folder}" "${ynh_repo}"
     zip -r $ynh_release_filename "${ynh_repo}"
     mv $ynh_release_filename "../${ynh_release_filename}"
-    
+
 popd
 ynh_release_SHA=$(sha256sum ${ynh_release_filename} | cut -d' ' -f1)
 ynh_release_URL="https://github.com/${ynh_owner}/${ynh_repo}/releases/download/${release_version}/${ynh_release_filename}"
@@ -254,7 +254,7 @@ ynh_release_version="${release_version#${upstream_repo}_}" #e.g. v3.2.0 (release
 storage_end=$(used_disk_space_in_gb)
 
 # Compute disk usage statistics
-total_storage_used="$(echo "scale=2; $storage_end - storage_start" | bc)"
+total_storage_used="$(echo "scale=2; $storage_end - $storage_start" | bc)"
 total_storage_used_without_framework="$(echo "scale=2; $storage_end - $storage_install_build_framework + $storage_source_customization - $storage_start" | bc)"
 echo "Total disk space used after build: $total_storage_usedGB (or $total_storage_used_without_framework GB without $framework)"
 
@@ -268,11 +268,11 @@ rm "${build_folder}.tar.gz"
 if [[ "$upstream_source_type" == "commit" ]]; then #build diff URL (commits history)
 
     # Get previous commit SHA-1 string
-    if [[ "$upstream_version_source" == "latest" ]]; then #history between current manifest and last upstream commit  
+    if [[ "$upstream_version_source" == "latest" ]]; then #history between current manifest and last upstream commit
         previous_upstream_filename=${upstream_url##*/}
         previous_upstream_filename=${previous_upstream_filename%.tar.gz}
         previous_upstream_filename=${previous_upstream_filename%.zip}
-        previous_release_commit_SHA_short=${previous_release_commit_SHA_full:0:8}        
+        previous_release_commit_SHA_short=${previous_release_commit_SHA_full:0:8}
     else #history between previous manifest and current manifest
         ynh_releases_json_url="https://api.github.com/repos/${ynh_owner}/${ynh_repo}/releases"
         last_yhn_releases_names=$(curl --silent "$ynh_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name' | head -n 2) #get the two last releases names
@@ -298,7 +298,7 @@ fi
 # UPLOAD RELEASE (LOCAL BUILD ONLY)
 #=================================================
 if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
-    
+
     echo "Trying to upload the release to https://github.com/${ynh_owner}/${ynh_repo}/releases/ ..."
 
     if [[ "$@" =~ "push_release" ]]; then
@@ -365,7 +365,7 @@ if [[ $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
         if ! $upload_ok; then
             conclusion_msg="Build completed but not uploaded - upload failed."
         fi
-    fi    
+    fi
 elif [[ -z $gh_personal_token && -z $GITHUB_OUTPUT ]]; then
     conclusion_msg="Build completed but not uploaded - missing Github Token."
 fi
@@ -374,7 +374,7 @@ fi
 # EXPORT VARIABLES FOR GITHUB WORKFLOW (GITHUB WORKFLOW ONLY)
 #=================================================
 
-if [[ $GITHUB_OUTPUT ]]; then 
+if [[ $GITHUB_OUTPUT ]]; then
     echo "YNH_RELEASE_FILE=${ynh_release_filename}" >> $GITHUB_OUTPUT
     echo "YNH_RELEASE_SHA=${ynh_release_SHA}" >> $GITHUB_OUTPUT
     echo "YNH_RELEASE_URL=${ynh_release_URL}" >> $GITHUB_OUTPUT
@@ -383,14 +383,14 @@ if [[ $GITHUB_OUTPUT ]]; then
     echo "BUILD_STORAGE_USE=${total_storage_used}" >> $GITHUB_OUTPUT
     echo "BUILD_STORAGE_USE_EXCL_FRAMEWORK=${total_storage_used_without_framework}" >> $GITHUB_OUTPUT
     echo "BUILD_FRAMEWORK_NAME=${framework}" >> $GITHUB_OUTPUT
-    
+
     conclusion_msg="Build completed - continuing with the workflow's next step."
 fi
 
 #=================================================
 # CONCLUDE
 #=================================================
-# End debug output tracing 
+# End debug output tracing
 set +x
 
 # Final status
