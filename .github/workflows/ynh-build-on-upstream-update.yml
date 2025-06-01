@@ -30,7 +30,7 @@ jobs:
           build_time=$(echo $build_stats | cut -d"|" -f2 | cut -d" " -f2 | cut -d"." -f1)
           hhmmss_build_time=$(awk -F: '{if(NF==1) printf "00:00:%02d\n",$1; else if(NF==2) printf "00:%02d:%02d\n",$1,$2; else printf "%02d:%02d:%02d\n",$1,$2,$3}' <<< "$build_time")
           build_ram_use_kb=$(echo $build_stats | cut -d"|" -f3 | cut -d":" -f2)
-          build_ram_use_gb=$(LC_NUMERIC="en_US.UTF-8" printf '%.3f\n' $(echo "$build_ram_use_kb/1024/1024" | bc -l))
+          build_ram_use_gb=$(LC_NUMERIC="en_US.UTF-8" printf '%.2f\n' $(echo "$build_ram_use_kb/1024/1024" | bc -l))
           echo "BUILD_TIME=${hhmmss_build_time}" >> $GITHUB_OUTPUT
           echo "PEAK_RAM_USE_GB=${build_ram_use_gb}" >> $GITHUB_OUTPUT
 

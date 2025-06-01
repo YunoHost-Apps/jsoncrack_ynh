@@ -105,8 +105,9 @@ function ynh_build_instructions {
 #=================================================
 # Measure disk space use
 function used_disk_space_in_gb {
-  output=$(df -Ph . | awk 'NR==2 {print $3}')
-  output=${output%G}
+  output="$(df -PhBM . | awk 'NR==2 {print $3}')"
+  output=${output%M}
+  output="$(echo "scale=2; $output / 1024" | bc)"
   echo $output
 }
 
