@@ -274,7 +274,7 @@ if [[ "$upstream_source_type" == "commit" ]]; then #build diff URL (commits hist
         previous_release_commit_SHA_short=${previous_release_commit_SHA_full:0:8}        
     else #history between previous manifest and current manifest
         ynh_releases_json_url="https://api.github.com/repos/${ynh_owner}/${ynh_repo}/releases"
-        previous_upstream_filename=$(curl --silent "$ynh_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name') | head -n 2 | tail -n 1 #e.g. v2025.05.01-9f801cd6
+        previous_upstream_filename=$(curl --silent "$ynh_releases_json_url" | jq '.[] | select(( .prerelease == false ) and ( .draft == false )) | .tag_name' | head -n 2 | tail -n 1) #e.g. v2025.05.01-9f801cd6
         previous_release_commit_SHA_short=${previous_upstream_filename: -8}
     fi
 
@@ -376,6 +376,7 @@ if [[ $GITHUB_OUTPUT ]]; then
     echo "YNH_RELEASE_CHANGELOG_URL=${ynh_release_changelog_url}" >> $GITHUB_OUTPUT
     echo "BUILD_STORAGE_USE=${total_storage_used}" >> $GITHUB_OUTPUT
     echo "BUILD_STORAGE_USE_EXCL_FRAMEWORK=${total_storage_used_without_framework}" >> $GITHUB_OUTPUT
+    echo "BUILD_FRAMEWORK_NAME=${framework}" >> $GITHUB_OUTPUT
     
     conclusion_msg="Build completed - continuing with the workflow's next step."
 fi
