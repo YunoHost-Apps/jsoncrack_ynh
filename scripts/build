@@ -20,7 +20,7 @@ function ynh_manually_defined_package_variables {
     upstream_version_source="manifest"  # "manifest" or "latest", depending on whether you want to build the version defined in the manifest or the latest available version upstream. For most cases, use "manifest".
     upstream_branch_name="main"         # Name of the branch of the upstream repo to get the source from - often "main" or "master".
     default_build_folder="out"          # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
-    framework="nodejs"                  # Framework that should be installed - currently only "nodejs" or "none" are supported.
+    runtime_environment="nodejs"        # Runtime environment that should be installed - currently only "nodejs" or "none" are supported.
     build_nodejs_version=20             # NodeJS version to use (if any) for the build.
 
     # Local build only
@@ -133,7 +133,7 @@ upstream_url="$(grep -A 5 'resources.sources.main' ynh-manifest.toml | grep url 
 rm ynh-manifest.toml
 
 # Check that required variables are defined
-required_vars=(ynh_owner ynh_repo upstream_version_source upstream_branch_name  default_build_folder framework upstream_url)
+required_vars=(ynh_owner ynh_repo upstream_version_source upstream_branch_name  default_build_folder runtime_environment upstream_url)
 for var_name in "${required_vars[@]}"; do
     [ -z "${!var_name}" ] && echo "required $var_name is unset." && required_var_unset=true
 done
@@ -215,11 +215,11 @@ popd
 storage_source_customization=$(used_disk_space_in_gb)
 
 #=================================================
-# INSTALL BUILD FRAMEWORK
+# INSTALL BUILD ENVIRONMENT
 #=================================================
 # NodeJS - Install required version
 current_node_version=$(node -v | cut -c 2- | cut -c 1-${#build_nodejs_version})
-if [ "$framework" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_version" ]; then
+if [ "$runtime_environment" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_version" ]; then
 
     # Install NVM if it is not already installed
     if [ "nvm" != $(command -v nvm) ]; then
@@ -230,7 +230,7 @@ if [ "$framework" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_ve
     source ~/.nvm/nvm.sh install $build_nodejs_version
 fi
 
-storage_install_build_framework=$(used_disk_space_in_gb)
+storage_install_build_runtime_environment=$(used_disk_space_in_gb)
 
 #=================================================
 # BUILD FROM SOURCE
@@ -254,8 +254,8 @@ storage_end=$(used_disk_space_in_gb)
 
 # Compute disk usage statistics
 total_storage_used="$(echo "scale=2; $storage_end - $storage_start" | bc | sed "s/^\./0./")"
-total_storage_used_without_framework="$(echo "scale=2; $storage_end - $storage_install_build_framework + $storage_source_customization - $storage_start" | bc | sed "s/^\./0./")"
-echo "Total disk space used after build: $total_storage_usedGB (or $total_storage_used_without_framework GB without $framework)"
+total_storage_used_without_runtime_environment="$(echo "scale=2; $storage_end - $storage_install_build_runtime_environment + $storage_source_customization - $storage_start" | bc | sed "s/^\./0./")"
+echo "Total disk space used after build: $total_storage_usedGB (or $total_storage_used_without_runtime_environment GB without $runtime_environment)"
 
 # Clean build folder
 rm -r "${build_folder}"
@@ -380,8 +380,8 @@ if [[ $GITHUB_OUTPUT ]]; then
     echo "YNH_RELEASE_VERSION=${ynh_release_version}" >> $GITHUB_OUTPUT
     echo "YNH_RELEASE_CHANGELOG_URL=${ynh_release_changelog_url}" >> $GITHUB_OUTPUT
     echo "BUILD_STORAGE_USE=${total_storage_used}" >> $GITHUB_OUTPUT
-    echo "BUILD_STORAGE_USE_EXCL_FRAMEWORK=${total_storage_used_without_framework}" >> $GITHUB_OUTPUT
-    echo "BUILD_FRAMEWORK_NAME=${framework}" >> $GITHUB_OUTPUT
+    echo "BUILD_STORAGE_USE_EXCL_RUNTIME_ENVIRONMENT=${total_storage_used_without_runtime_environment}" >> $GITHUB_OUTPUT
+    echo "BUILD_RUNTIME_ENVIRONMENT_NAME=${runtime_environment}" >> $GITHUB_OUTPUT
 
     conclusion_msg="Build completed - continuing with the workflow's next step."
 fi
