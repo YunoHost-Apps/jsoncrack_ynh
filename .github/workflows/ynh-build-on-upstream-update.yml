@@ -28,9 +28,10 @@ jobs:
           # Exports stats (BUILD_STORAGE_USE is already exported within the previous script)
           build_stats=$(cat $build_log | tail -n 1 | grep "##Stats##")
           build_time=$(echo $build_stats | cut -d"|" -f2 | cut -d" " -f2 | cut -d"." -f1)
+          hhmmss_build_time=$(awk -F: '{if(NF==1) printf "00:00:%02d\n",$1; else if(NF==2) printf "00:%02d:%02d\n",$1,$2; else printf "%02d:%02d:%02d\n",$1,$2,$3}' <<< "$build_time")
           build_ram_use_kb=$(echo $build_stats | cut -d"|" -f3 | cut -d":" -f2)
           build_ram_use_gb=$(LC_NUMERIC="en_US.UTF-8" printf '%.3f\n' $(echo "$build_ram_use_kb/1024/1024" | bc -l))
-          echo "BUILD_TIME=${build_time}" >> $GITHUB_OUTPUT
+          echo "BUILD_TIME=${hhmmss_build_time}" >> $GITHUB_OUTPUT
           echo "PEAK_RAM_USE_GB=${build_ram_use_gb}" >> $GITHUB_OUTPUT
 
       - name: Prepare draft release
@@ -49,7 +50,7 @@ jobs:
             ### Changelog
             Cf. upstream release note: ${{ steps.build_release.outputs.YNH_RELEASE_CHANGELOG_URL }}
             ### Build statistics
-            - Execution time ([hh:m]m:ss): ${{ steps.build_release.outputs.BUILD_TIME }}
+            - Execution time: ${{ steps.build_release.outputs.BUILD_TIME }}
             - Peak RAM use: ${{ steps.build_release.outputs.PEAK_RAM_USE_GB }}GB
             - Disk space use: 
               - Total: ${{ steps.build_release.outputs.BUILD_STORAGE_USE }}GB
