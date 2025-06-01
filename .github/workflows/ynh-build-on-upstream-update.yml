@@ -53,7 +53,7 @@ jobs:
             - Execution time: ${{ steps.build_release.outputs.BUILD_TIME }}
             - Peak RAM used: ${{ steps.build_release.outputs.PEAK_RAM_USE_GB }}GB
             - Disk space used: ${{ steps.build_release.outputs.BUILD_STORAGE_USE }}GB
-              - Excluding `${{ steps.build_release.outputs.BUILD_FRAMEWORK_NAME }}` installation: ${{ steps.build_release.outputs.BUILD_STORAGE_USE_EXCL_FRAMEWORK }}GB
+              - Excluding `${{ steps.build_release.outputs.BUILD_RUNTIME_ENVIRONMENT_NAME }}` installation: ${{ steps.build_release.outputs.BUILD_STORAGE_USE_EXCL_RUNTIME_ENVIRONMENT }}GB
 
       - name: Replace URL & SHA256 in manifest.toml
         run: |
