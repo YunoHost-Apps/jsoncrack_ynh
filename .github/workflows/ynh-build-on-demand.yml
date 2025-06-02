@@ -61,7 +61,7 @@ jobs:
         uses: EndBug/add-and-commit@v9
         with:
           default_author: github_actions
-          message: 'Update release in manifest'
+          message: 'Upgrade release in manifest'
           add: 'manifest.toml'
 
       - name: Create pull request or update existing one
@@ -78,10 +78,10 @@ jobs:
                 PR_BODY="${OLD_PR_BODY}\n\n---\n${PR_BODY}"
             fi
             echo "Editing already existing PR for the current branch -> ${PR_URL}"
-            echo -e $PR_BODY | gh pr edit --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
+            echo -e $PR_BODY | gh pr edit --title 'Upgrade to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
             exit 0
           else
-            echo -e $PR_BODY | gh pr create --base master --head ${CURRENT_BRANCH_NAME} --title 'Update to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
+            echo -e $PR_BODY | gh pr create --base master --head ${CURRENT_BRANCH_NAME} --title 'Upgrade to ${{ steps.build_release.outputs.YNH_RELEASE_VERSION }}' --body-file -
           fi 
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
