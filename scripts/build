@@ -145,12 +145,12 @@ fi
 # DOWNLOAD AND EXTRACT SOURCE
 #=================================================
 # Parse URL (GitHub)
-github_url_regex="^https://(api.)?github.com/(repos/)?([a-zA-Z0-9._-]*)/([a-zA-Z0-9._-]*)/(releases|archive)?/(refs/tags/|download/)?([a-zA-Z0-9._-]*).*$"
+github_url_regex="^https://(api.)?github.com/(repos/)?([a-zA-Z0-9._-]*)/([a-zA-Z0-9._-]*)/(releases|archive)?/(refs/tags/|download/)?([a-zA-Z0-9._-]*)(\.tar\.gz|\.zip|/)(.*)$"
 if [[ "$upstream_url" =~ $github_url_regex ]]; then
     upstream_owner="${BASH_REMATCH[3]}"
     upstream_repo="${BASH_REMATCH[4]}"
     upstream_source_type="${BASH_REMATCH[6]}"
-    upstream_tag="${BASH_REMATCH[7]}"
+    upstream_tag="${BASH_REMATCH[7]}" #e.g. v3.2.0 (tag or release archive URL) or d5f9bfc7fba1f1908863390f16ba28589d84a7d5 (commit archive URL)
 
     full_upstream_path="${upstream_owner}/${upstream_repo}"
 
@@ -185,9 +185,6 @@ if [[ "$upstream_url" =~ $github_url_regex ]]; then
         fi
         download_url="https://github.com/${full_upstream_path}/archive/${upstream_tag}.tar.gz"
         last_date_tag_short=$(echo $manifest_version | cut -d"~" -f1)
-        upstream_tag=${upstream_tag##*/}
-        upstream_tag=${upstream_tag%.tar.gz}
-        upstream_tag=${upstream_tag%.zip}
         upstream_tag_short=${upstream_tag:0:8}
         build_folder="${upstream_repo}_v${last_date_tag_short}-${upstream_tag_short}" #e.g. jsoncrack.com_v2024.11.19-d5f9bfc7
         release_version="${build_folder#${upstream_repo}_}"
