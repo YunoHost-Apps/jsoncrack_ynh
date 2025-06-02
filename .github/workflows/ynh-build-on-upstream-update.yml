@@ -46,7 +46,7 @@ jobs:
           prerelease: false
           make_latest: true
           body: |
-            Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-upstream-update.yml` in order to split upstream website from the app and ensure sub-directory install compatibility.
+            Version built for Yunohost using `scripts/build` and `.github/workflows/ynh-build-on-upstream-update.yml`.
             ### Changelog
             Cf. upstream release note: ${{ steps.build_release.outputs.YNH_RELEASE_CHANGELOG_URL }}
             ### Build statistics
