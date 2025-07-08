@@ -19,7 +19,6 @@ if [[ $path != '/' ]]; then newpath=$path; fi
 
 # Replace path placeholder recursively in all files of the app folder
 grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
-grep -rli '/__YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_SUBDIR_PATH__@$newpath@g"
 
 # Keep only the core app and remove useless files and folders related with upstream website
 remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")

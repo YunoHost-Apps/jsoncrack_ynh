@@ -42,16 +42,16 @@ function ynh_optional_source_customizations {
     sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                   # Extend file size upload limitation
 
     # Prepare $domain$path replacement
-    sed -i '/const config =/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
-    sed -i 's/\/editor/\/__YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
-    sed -i 's/assets/\/__YNH_SUBDIR_PATH__\/assets"/g' "./public/manifest.json"
+    sed -i '/const config =/a \ \ basePath: "\/__YNH_DOMAIN____YNH_SUBDIR_PATH__",' "./next.config.js"
+    sed -i 's/\/editor/\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
+    sed -i 's/assets/\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets"/g' "./public/manifest.json"
     sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
-    sed -i 's/"\/manifest.json"/"\/__YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
-    sed -i 's/"\/favicon.ico"/"\/__YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
+    sed -i 's/"\/manifest.json"/"\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
+    sed -i 's/"\/favicon.ico"/"\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
     sed -i 's/Link href="\/"/Link href="\/editor"/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
+    sed -i 's/"\/assets/"\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
+    sed -i 's/"\/assets/"\/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
 
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename
