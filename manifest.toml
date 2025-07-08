@@ -54,7 +54,7 @@ ram.runtime = "0M"
 
         [resources.sources.ynh_build]
         url = "https://github.com/Yunohost-Apps/jsoncrack_ynh/releases/download/v2025.07.06-bd97ae5a/jsoncrack.com_v2025.07.06-bd97ae5a_ynh.zip"
-        sha256 = "043e824b7f408e066b04c5f91a0e81b40fef74d647708fd721caf0691f91478e"
+        sha256 = "4a1f0723ecc2df5e534152a46477197414ddba507b67a79fe8c8c9ca2a05daa8"
         format = "zip"
         extract = true
         in_subdir = true
