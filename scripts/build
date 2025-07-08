@@ -127,7 +127,8 @@ storage_start=$(used_disk_space_in_gb)
 ynh_manually_defined_package_variables
 
 # Parse manifest automatically
-curl --silent --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/master/manifest.toml"
+branch_name="${1:-main}" #can be passed to the script as a positional argument
+curl --silent --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/${branch_name}/manifest.toml"
 manifest_version="$(grep '^version' ynh-manifest.toml | cut -d'"' -f2)"
 upstream_url="$(grep -A 5 'resources.sources.main' ynh-manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)"
 rm ynh-manifest.toml
