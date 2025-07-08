@@ -42,16 +42,16 @@ function ynh_optional_source_customizations {
     sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                   # Extend file size upload limitation
 
     # Prepare $domain$path replacement
-    sed -i '/const config =/a \ \ basePath: "\/__YNH_SUBDIR_PATH__",' "./next.config.js"
-    sed -i 's/\/editor/\/__YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
-    sed -i 's/assets/\/__YNH_SUBDIR_PATH__\/assets"/g' "./public/manifest.json"
+    sed -i '/const config =/a \ \ basePath: "\/__YNH_DOMAIN____YNH_SUBDIR_PATH__",' "./next.config.js"
+    sed -i 's/\/editor/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
+    sed -i 's/assets/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets"/g' "./public/manifest.json"
     sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
-    sed -i 's/"\/manifest.json"/"\/__YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
-    sed -i 's/"\/favicon.ico"/"\/__YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
-    sed -i 's/Link href="\/"/Link href="\/editor"/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
-    sed -i 's/"\/assets/"\/__YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
+    sed -i 's/"\/manifest.json"/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
+    sed -i 's/"\/favicon.ico"/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
+    sed -i 's/Link href="\/"/Link href="editor"/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
+    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
 
     # Adapt text for YNH context
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename
@@ -127,8 +127,12 @@ storage_start=$(used_disk_space_in_gb)
 ynh_manually_defined_package_variables
 
 # Parse manifest automatically
-branch_name="${1:-main}" #can be passed to the script as a positional argument
-curl --silent --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/${branch_name}/manifest.toml"
+branch_name="${1:-main}" #can be passed to the script as a positional argument or default to main/master branch
+download_branch_manifest=$(curl --silent --show-error --location --write-out '%{http_code}' --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/${branch_name}/manifest.toml")
+if [[ "$download_branch_manifest" = 404 ]]; then 
+    # Yunohost's legacy repos have a 'master' branch instead of a 'main' branch
+    download_manifest_master=$(curl --silent --show-error --location --write-out '%{http_code}' --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/master/manifest.toml")
+fi
 manifest_version="$(grep '^version' ynh-manifest.toml | cut -d'"' -f2)"
 upstream_url="$(grep -A 5 'resources.sources.main' ynh-manifest.toml | grep url | grep -o 'http[s]\?://[^ "]\+' | head -1)"
 rm ynh-manifest.toml
