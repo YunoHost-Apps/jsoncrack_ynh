@@ -17,9 +17,6 @@ ynh_setup_source --dest_dir="$install_dir" --source_id="ynh_build" --full_replac
 newpath=""
 if [[ $path != '/' ]]; then newpath=$path; fi
 
-# Replace path placeholder recursively in all files of the app folder
-grep -rli '__YNH_DOMAIN____YNH_SUBDIR_PATH__' $install_dir/* | xargs sed -i "s@/__YNH_DOMAIN____YNH_SUBDIR_PATH__@$domain$newpath@g"
-
 # Keep only the core app and remove useless files and folders related with upstream website
 remove=("404.html" "CNAME" "converter" "docs.html" "index.html" "legal" "robots.txt" "sitemap-0.xml" "sitemap.xml" "tools" "type")
 for item in "${remove[@]}"; do
@@ -27,6 +24,10 @@ for item in "${remove[@]}"; do
         ynh_safe_rm "$install_dir/$item"
     fi
 done
+
+# Replace path placeholder recursively in all files of the app folder
+match="/?__YNH_DOMAIN____YNH_SUBDIR_PATH__"
+grep --extended-regexp --recursive --files-with-matches --ignore-case "$match" $install_dir/* | xargs -d '\n' sed --regexp-extended --in-place "s@$match@https://$domain$newpath@g"
 
 # Install CDN package locally
 monaco_source_url=$(ynh_read_manifest "resources.sources.monaco_editor.url")

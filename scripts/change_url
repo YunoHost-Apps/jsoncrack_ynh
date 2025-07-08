@@ -16,8 +16,9 @@ if [[ $old_path != '/' ]]; then old_path_2=$old_path; fi
 new_path_2=""
 if [[ $new_path != '/' ]]; then new_path_2=$new_path; fi
 
-# Replace old URLs recursively in all files of the app folder
-grep -rli "$old_domain$old_path_2" $install_dir/* | xargs sed -i "s@$old_domain$old_path_2@$new_domain$new_path_2@g"
+# Replace base URL recursively in all files of the app folder
+match="$old_domain$old_path_2"
+grep --extended-regexp --recursive --files-with-matches --ignore-case "$match" $install_dir/* | xargs -d '\n' sed --regexp-extended --in-place "s@$match@https://$new_domain$new_path_2@g"
 
 #=================================================
 # MODIFY URL IN NGINX CONF

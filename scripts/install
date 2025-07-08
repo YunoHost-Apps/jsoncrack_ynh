@@ -27,7 +27,7 @@ if [[ $path != '/' ]]; then newpath=$path; fi
 
 # Replace path placeholder recursively in all files of the app folder
 match="/?__YNH_DOMAIN____YNH_SUBDIR_PATH__"
-grep --extended-regexp --recursive --files-with-matches --ignore-case $match $install_dir/* | xargs -I {} ynh_replace --match=$match --replace="https://$domain$newpath" --file="{}"
+grep --extended-regexp --recursive --files-with-matches --ignore-case "$match" $install_dir/* | xargs -d '\n' sed --regexp-extended --in-place "s@$match@https://$domain$newpath@g"
 
 # Install CDN package locally
 monaco_source_url=$(ynh_read_manifest "resources.sources.monaco_editor.url")
