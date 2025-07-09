@@ -3,7 +3,11 @@ name: ynh-build-on-push-to-testing
 on:
   push:
     branches: [ "testing" ]
-    
+
+permissions: 
+    contents: write #required for 'draft_release' step, cf. https://github.com/softprops/action-gh-release/issues/572
+    pull-requests: write #required for 'create/edit PR' step
+ 
 jobs: 
   ynh-app-release:
     runs-on: ubuntu-latest
