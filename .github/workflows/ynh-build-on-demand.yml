@@ -3,6 +3,10 @@ name: ynh-build-on-demand
 on:
   workflow_dispatch
 
+permissions: 
+    contents: write #required for 'draft_release' step, cf. https://github.com/softprops/action-gh-release/issues/572
+    pull-requests: write #required for 'create/edit PR' step
+
 jobs: 
   ynh-app-release:
     runs-on: ubuntu-latest
