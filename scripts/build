@@ -32,14 +32,16 @@ function ynh_optional_source_customizations {
     # SOURCE CUSTOMIZATION COMMANDS (OPTIONAL)
     #=================================================
     # Remove calls to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/todiagram.com/d}' "./src/features/editor/Toolbar/index.tsx"       # Remove call to Premium (removes block delimited with START='{!isWidget' and END='\n\s*)}' which contains TARGET='todiagram.com').
-    sed -i '/setVisible/d' "./src/features/editor/Toolbar/index.tsx"                                                     # Remove now unused var
-    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                    # Remove call for premium when executed not from official domain
-    sed -i 's/\(NEXT_PUBLIC_NODE_LIMIT=\)[0-9]*/\199999999/g' ".env"                                                     # Extend graph nodes default limit (would that limit be reached, call for premium will be displayed)
-    sed -i 's/maxSize={300/maxSize={1024/g' "./src/features/editor/FullscreenDropzone.tsx"                               # Extend file size upload limitation
-    sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"            # Extend file size upload limitation
-    sed -i 's/maxSize={500/maxSize={1024/g' "./src/features/modals/ImportModal/index.tsx"                                # Extend file size upload limitation
-    sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                   # Extend file size upload limitation
+    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/todiagram.com/d}' "./src/features/editor/Toolbar/index.tsx"               # Remove call to Premium (removes block delimited with START='<Button' and END='</Button>' which contains TARGET='todiagram.com').
+    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/todiagram.com/d}' "./src/features/editor/BottomBar.tsx"           # Remove call to Premium (removes block delimited with START='<Menu.Item' and END='</Menu.Item>' which contains TARGET='todiagram.com').
+    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/UpgradeModal/d}' "./src/features/modals/SchemaModal/index.tsx"    # Remove call to Premium (removes block delimited with START='<Menu.Item' and END='</Menu.Item>' which contains TARGET='UpgradeModal').
+    sed -i '/setVisible/d' "./src/features/editor/Toolbar/index.tsx"                                                             # Remove now unused var
+    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                            # Remove call for premium when executed not from official domain
+    sed -i 's/\(NEXT_PUBLIC_NODE_LIMIT=\)[0-9]*/\199999999/g' ".env"                                                             # Extend graph nodes default limit (would that limit be reached, call for premium will be displayed)
+    sed -i 's/maxSize={300/maxSize={1024/g' "./src/features/editor/FullscreenDropzone.tsx"                                       # Extend file size upload limitation
+    sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"                    # Extend file size upload limitation
+    sed -i 's/maxSize={500/maxSize={1024/g' "./src/features/modals/ImportModal/index.tsx"                                        # Extend file size upload limitation
+    sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                           # Extend file size upload limitation
 
     # Prepare $domain$path replacement
     sed -i '/const config =/a \ \ basePath: "\/__YNH_DOMAIN____YNH_SUBDIR_PATH__",' "./next.config.js"
