@@ -32,12 +32,14 @@ function ynh_optional_source_customizations {
     # SOURCE CUSTOMIZATION COMMANDS (OPTIONAL)
     #=================================================
     # Remove calls to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/todiagram.com/d}' "./src/features/editor/Toolbar/index.tsx"               # Remove call to Premium (removes block delimited with START='<Button' and END='</Button>' which contains TARGET='todiagram.com').
-    sed -i '/setVisible/d' "./src/features/editor/Toolbar/index.tsx"                                                             # Remove now unused var
-    sed -i '/<Menu\.Item/{:Loop;N;/\n\s*<\/Menu\.Item>/!bLoop;/todiagram.com/d}' "./src/features/editor/BottomBar.tsx"           # Remove call to Premium (removes block delimited with START='<Menu.Item' and END='</Menu.Item>' which contains TARGET='todiagram.com').
-    sed -i '/\s*<Menu\.Item$/,+5d' "./src/features/modals/SchemaModal/index.tsx"                                                 # Remove call to Premium (removes block delimited with START='<Menu.Item' and END='</Menu.Item>' which contains TARGET='UpgradeModal').
-    sed -i '/setVisible/d' "./src/features/modals/SchemaModal/index.tsx"                                                         # Remove now unused var
-    sed -i '/ExternalMode/d' "./src/pages/editor.tsx"                                                                            # Remove call for premium when executed not from official domain
+    sed -i 's/- ${BANNER_HEIGHT}//g' "./src/features/editor/views/GraphView/index.tsx"											 # Remove call to Premium banner
+    sed -i 's/- ${BANNER_HEIGHT}//g' "./src/features/editor/TextEditor.tsx"														 # Remove call to Premium banner
+    sed -i 's/- ${BANNER_HEIGHT}//g' "./src/pages/editor.tsx"																	 # Remove call to Premium banner
+    sed -i '/BANNER_HEIGHT/d' "./src/features/editor/views/GraphView/index.tsx"											 		 # Remove call to Premium banner
+    sed -i '/BANNER_HEIGHT/d' "./src/features/editor/TextEditor.tsx"															 # Remove call to Premium banner
+    sed -i '/BANNER_HEIGHT/d' "./src/pages/editor.tsx"																			 # Remove call to Premium banner
+    sed -i '/<Banner/d' "./src/pages/editor.tsx"																				 # Remove call to Premium banner
+	sed -i '/<Text c="dimmed">/{:Loop;N;/\n\s*<\/Anchor>/!bLoop;/ToDiagram/d}' "./src/features/editor/ExternalMode.tsx"			 # Remove call to Premium (removes block delimited with START='<Text c="dimmed">' and END='</Anchor>' which contains TARGET='ToDiagram'. We leave the mention of ToDiagram in the FAQ).
     sed -i 's/\(NEXT_PUBLIC_NODE_LIMIT=\)[0-9]*/\199999999/g' ".env"                                                             # Extend graph nodes default limit (would that limit be reached, call for premium will be displayed)
     sed -i 's/maxSize={300/maxSize={1024/g' "./src/features/editor/FullscreenDropzone.tsx"                                       # Extend file size upload limitation
     sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"                    # Extend file size upload limitation
