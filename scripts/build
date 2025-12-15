@@ -21,7 +21,7 @@ function ynh_manually_defined_package_variables {
     upstream_branch_name="main"         # Name of the branch of the upstream repo to get the source from - often "main" or "master".
     default_build_folder="out"          # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
     runtime_environment="nodejs"        # Runtime environment that should be installed - currently only "nodejs" or "none" are supported.
-    build_nodejs_version=20             # NodeJS version to use (if any) for the build.
+    build_nodejs_version=24.10          # NodeJS version to use (if any) for the build.
 
     # Local build only
     gh_personal_token=""                # fill with your GitHub Personal Token if you want to upload the release to GitHub after build - cf. https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
@@ -85,7 +85,7 @@ function ynh_build_instructions {
     #=================================================
     # BUILD INSTRUCTIONS (REQUIRED)
     #=================================================
-    corepack enable pnpm && corepack prepare pnpm@9.1.4 --activate && pnpm install --no-frozen-lockfile
+    corepack enable pnpm && corepack prepare pnpm@10.10.0 --activate && pnpm install --no-frozen-lockfile
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     pnpm run lint:fix
     pnpm run build
@@ -223,12 +223,14 @@ current_node_version=$(node -v | cut -c 2- | cut -c 1-${#build_nodejs_version})
 if [ "$runtime_environment" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_version" ]; then
 
     # Install NVM if it is not already installed
-    if [ "nvm" != $(command -v nvm) ]; then
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash #Official install script from https://github.com/nvm-sh/nvm#install--update-script
+    if [ -z "$(command -v nvm)" ] && [ -z "$NVM_DIR" ]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash #Official install script from https://github.com/nvm-sh/nvm#install--update-scriptn
     fi
-
+    
     # Install required NodeJS version
-    source ~/.nvm/nvm.sh install $build_nodejs_version
+    source $HOME/.nvm/nvm.sh
+    nvm install $build_nodejs_version
+    nvm use $build_nodejs_version
 fi
 
 storage_install_build_runtime_environment=$(used_disk_space_in_gb)
