@@ -85,7 +85,7 @@ function ynh_build_instructions {
     #=================================================
     # BUILD INSTRUCTIONS (REQUIRED)
     #=================================================
-    corepack enable pnpm && corepack prepare pnpm@9.1.4 --activate && pnpm install --no-frozen-lockfile
+    corepack enable pnpm && corepack prepare pnpm@10.10.0 --activate && pnpm install --no-frozen-lockfile
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
     pnpm run lint:fix
     pnpm run build
