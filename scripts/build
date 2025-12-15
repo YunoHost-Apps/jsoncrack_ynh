@@ -223,12 +223,14 @@ current_node_version=$(node -v | cut -c 2- | cut -c 1-${#build_nodejs_version})
 if [ "$runtime_environment" = "nodejs" ] && [ "$current_node_version" != "$build_nodejs_version" ]; then
 
     # Install NVM if it is not already installed
-    if [ "nvm" != $(command -v nvm) ]; then
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash #Official install script from https://github.com/nvm-sh/nvm#install--update-script
+    if [ -z "$(command -v nvm)" ] && [ -z "$NVM_DIR" ]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash #Official install script from https://github.com/nvm-sh/nvm#install--update-scriptn
     fi
-
+    
     # Install required NodeJS version
-    source ~/.nvm/nvm.sh install $build_nodejs_version
+    source $HOME/.nvm/nvm.sh
+    nvm install $build_nodejs_version
+    nvm use $build_nodejs_version
 fi
 
 storage_install_build_runtime_environment=$(used_disk_space_in_gb)
