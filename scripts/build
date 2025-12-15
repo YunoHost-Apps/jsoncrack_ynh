@@ -21,7 +21,7 @@ function ynh_manually_defined_package_variables {
     upstream_branch_name="main"         # Name of the branch of the upstream repo to get the source from - often "main" or "master".
     default_build_folder="out"          # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
     runtime_environment="nodejs"        # Runtime environment that should be installed - currently only "nodejs" or "none" are supported.
-    build_nodejs_version=20             # NodeJS version to use (if any) for the build.
+    build_nodejs_version=24             # NodeJS version to use (if any) for the build.
 
     # Local build only
     gh_personal_token=""                # fill with your GitHub Personal Token if you want to upload the release to GitHub after build - cf. https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
