@@ -128,7 +128,7 @@ ynh_manually_defined_package_variables
 # Parse manifest automatically
 branch_name="${1:-main}" #can be passed to the script as a positional argument or default to main/master branch
 download_branch_manifest=$(curl --silent --show-error --location --write-out '%{http_code}' --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/${branch_name}/manifest.toml")
-if [[ "$download_branch_manifest" = 404 ]]; then 
+if [[ "$download_branch_manifest" = 404 ]]; then
     # Yunohost's legacy repos have a 'master' branch instead of a 'main' branch
     download_manifest_master=$(curl --silent --show-error --location --write-out '%{http_code}' --output ynh-manifest.toml "https://raw.githubusercontent.com/${ynh_owner}/${ynh_repo}/refs/heads/master/manifest.toml")
 fi
@@ -145,6 +145,7 @@ if [ -n "$required_var_unset" ]; then
     echo "Error - one or more required variables are unset. Please make sure that all required variable are defined in the build script's \"SECTION TO EDIT\" and in the associated resources of the manifest.toml."
     exit 1
 fi
+
 #=================================================
 # DOWNLOAD AND EXTRACT SOURCE
 #=================================================
@@ -226,9 +227,9 @@ if [ "$runtime_environment" = "nodejs" ] && [ "$current_node_version" != "$build
     if [ -z "$(command -v nvm)" ] && [ -z "$NVM_DIR" ]; then
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash #Official install script from https://github.com/nvm-sh/nvm#install--update-scriptn
     fi
-    
+
     # Install required NodeJS version
-    source $HOME/.nvm/nvm.sh
+    source "$HOME/.nvm/nvm.sh"
     nvm install $build_nodejs_version
     nvm use $build_nodejs_version
 fi
