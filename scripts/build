@@ -68,8 +68,7 @@ function ynh_optional_source_customizations {
     gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                    # Delete complete lines containing 'gaEvent' for files located in src/*
 
     # Update domain name in SEO tags
-    SEO_canonical_links=$(grep -rl 'canonical' "./src") && echo $SEO_canonical_links | xargs sed -i 's@https://jsoncrack\.com@__YNH_DOMAIN____YNH_SUBDIR_PATH__@g'
-    cat "./src/layout/TypeLayout/TypegenWrapper.tsx"
+    sed -i 's@https://jsoncrack\.com/editor@__YNH_DOMAIN____YNH_SUBDIR_PATH__@' "./src/pages/editor.tsx" 			# Replace full link as nginx.conf points home to '/editor'
 }
 
 function ynh_build_instructions {
