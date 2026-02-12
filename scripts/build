@@ -56,7 +56,7 @@ function ynh_optional_source_customizations {
     sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename
     sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled
     sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled
-
+    
     # Remove Google Analytics (user tracking)
     sed -i '/NEXT_PUBLIC_GA_MEASUREMENT_ID/d' "./.env"
     sed -i '/nextjs-google-analytics/d' "./package.json"
@@ -64,21 +64,12 @@ function ynh_optional_source_customizations {
     sed -Ei '/IS_PROD/,+1 d' "./src/pages/_app.tsx"
     sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/features/editor/Toolbar/ToolsMenu.tsx"         # Delete part of line containing 'gaEvent'
     sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/features/editor/Toolbar/ViewMenu.tsx"           # Delete part of line containing 'gaEvent'
-    sed -i 's/ onClick={() => gaEvent("show_zoom_menu")}//g' "./src/features/editor/Toolbar/ZoomMenu.tsx"           # Delete part of line containing 'gaEvent'
     sed -i '/gaEvent("toggle_expand_collapse", {/,/});/d' "./src/features/editor/views/GraphView/OptionsMenu.tsx"   # Delete part of line containing 'gaEvent' (full block to avoid compilation error)
     gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                    # Delete complete lines containing 'gaEvent' for files located in src/*
 
-    # Disable Sentry (error tracking linked to the app's official instance) --> Doesn't seem enough to avoid calls to Sentry's website so we prefer to remove completely for now
-    #~ sed -i 's/process.env.NODE_ENV === "production"/false/g' "./sentry.client.config.ts"
-
-    # Remove Sentry (error tracking)
-    sed -i '/sentry/d' "./package.json"
-    sed -i '/@sentry/d' "./next.config.js"
-    #~ sed -i '/const sentryConfig/,+14d' "./next.config.js"
-    #~ sed -i 's/sentryConfig/bundleAnalyzerConfig/' "./next.config.js"
-    #~ sed -i '/Sentry/d' "./src/data/terms.json" --> Upstream terms page is not used in YNH package at the moment
-    rm "./sentry.client.config.ts"
-    rm "./sentry.edge.config.ts"
+    # Update domain name in SEO tags
+    SEO_canonical_links=$(grep -rl 'canonical' "./src") && echo $SEO_canonical_links | xargs sed -i 's@https://jsoncrack\.com@__YNH_DOMAIN____YNH_SUBDIR_PATH__@g'
+    cat "./src/layout/TypeLayout/TypegenWrapper.tsx"
 }
 
 function ynh_build_instructions {
