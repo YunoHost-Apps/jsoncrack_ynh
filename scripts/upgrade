@@ -53,4 +53,5 @@ ynh_config_add_nginx
 #=================================================
 # END OF SCRIPT
 #=================================================
+
 ynh_script_progression "Upgrade of $app completed"
