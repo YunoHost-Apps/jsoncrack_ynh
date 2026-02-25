@@ -15,16 +15,16 @@ function ynh_manually_defined_package_variables {
     #=================================================
     # VARIABLES TO DEFINE MANUALLY (REQUIRED)
     #=================================================
-    ynh_owner="Yunohost-Apps"           # YNH repo owner (it only supports GitHub for now) - e.g. "YunoHost-Apps".
-    ynh_repo="jsoncrack_ynh"            # YNH repo name - e.g. "jsoncrack_ynh".
-    upstream_version_source="manifest"  # "manifest" or "latest", depending on whether you want to build the version defined in the manifest or the latest available version upstream. For most cases, use "manifest".
-    upstream_branch_name="main"         # Name of the branch of the upstream repo to get the source from - often "main" or "master".
-    default_build_folder="out"          # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
-    runtime_environment="nodejs"        # Runtime environment that should be installed - currently only "nodejs" or "none" are supported.
-    build_nodejs_version=24.10          # NodeJS version to use (if any) for the build.
+    ynh_owner="Yunohost-Apps"            # YNH repo owner (it only supports GitHub for now) - e.g. "YunoHost-Apps".
+    ynh_repo="jsoncrack_ynh"             # YNH repo name - e.g. "jsoncrack_ynh".
+    upstream_version_source="manifest"   # "manifest" or "latest", depending on whether you want to build the version defined in the manifest or the latest available version upstream. For most cases, use "manifest".
+    upstream_branch_name="main"          # Name of the branch of the upstream repo to get the source from - often "main" or "master".
+    default_build_folder="apps/www/out"  # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
+    runtime_environment="nodejs"         # Runtime environment that should be installed - currently only "nodejs" or "none" are supported.
+    build_nodejs_version=24.10           # NodeJS version to use (if any) for the build.
 
     # Local build only
-    gh_personal_token=""                # fill with your GitHub Personal Token if you want to upload the release to GitHub after build - cf. https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
+    gh_personal_token=""                 # fill with your GitHub Personal Token if you want to upload the release to GitHub after build - cf. https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
 }
 
 function ynh_optional_source_customizations {
@@ -32,53 +32,54 @@ function ynh_optional_source_customizations {
     # SOURCE CUSTOMIZATION COMMANDS (OPTIONAL)
     #=================================================
     # Remove calls to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    sed -i '/Banner/d' "./src/pages/editor.tsx"                                                                                  # Remove call to Premium banner
-    sed -i '/<Text c="dimmed">/{:Loop;N;/\n\s*<\/Anchor>/!bLoop;/ToDiagram/d}' "./src/features/editor/ExternalMode.tsx"          # Remove call to Premium (removes block delimited with START='<Text c="dimmed">' and END='</Anchor>' which contains TARGET='ToDiagram'. We leave the mention of ToDiagram in the FAQ).
-    sed -i 's/\(NEXT_PUBLIC_NODE_LIMIT=\)[0-9]*/\199999999/g' ".env"                                                             # Extend graph nodes default limit (would that limit be reached, call for premium will be displayed)
-    sed -i 's/maxSize={300/maxSize={1024/g' "./src/features/editor/FullscreenDropzone.tsx"                                       # Extend file size upload limitation
-    sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./src/features/editor/FullscreenDropzone.tsx"                    # Extend file size upload limitation
-    sed -i 's/maxSize={500/maxSize={1024/g' "./src/features/modals/ImportModal/index.tsx"                                        # Extend file size upload limitation
-    sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./src/features/modals/ImportModal/index.tsx"                                           # Extend file size upload limitation
+    sed -i '/Banner/d' "./apps/www/src/pages/editor.tsx"                                                                                  # Remove call to Premium banner
+    sed -i '/<Text c="dimmed">/{:Loop;N;/\n\s*<\/Anchor>/!bLoop;/ToDiagram/d}' "./apps/www/src/features/editor/ExternalMode.tsx"          # Remove call to Premium (removes block delimited with START='<Text c="dimmed">' and END='</Anchor>' which contains TARGET='ToDiagram'. We leave the mention of ToDiagram in the FAQ).
+    sed -i 's/\(NEXT_PUBLIC_NODE_LIMIT=\)[0-9]*/\199999999/g' "./apps/www/env"                                                            # Extend graph nodes default limit (would that limit be reached, call for premium will be displayed)
+    sed -i 's/maxSize={300/maxSize={1024/g' "./apps/www/src/features/editor/FullscreenDropzone.tsx"                                       # Extend file size upload limitation
+    sed -i 's/(Max file size: 300 KB)/(Max file size: 1 MB)/g' "./apps/www/src/features/editor/FullscreenDropzone.tsx"                    # Extend file size upload limitation
+    sed -i 's/maxSize={500/maxSize={1024/g' "./apps/www/src/features/modals/ImportModal/index.tsx"                                        # Extend file size upload limitation
+    sed -i 's/(Max 500 KB)/(Max 1 MB)/g' "./apps/www/src/features/modals/ImportModal/index.tsx"                                           # Extend file size upload limitation
 
     # Prepare $domain$path replacement
-    sed -i '/const config =/a \ \ basePath: "\/__YNH_DOMAIN____YNH_SUBDIR_PATH__",' "./next.config.js"
-    sed -i 's/\/editor/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/editor"/g' "./public/manifest.json"
-    sed -i 's/assets/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets"/g' "./public/manifest.json"
-    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./src/constants/seo.ts"
-    sed -i 's/"\/manifest.json"/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/manifest.json"/g' "./src/constants/seo.ts"
-    sed -i 's/"\/favicon.ico"/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/favicon.ico"/g' "./src/constants/seo.ts"
-    sed -i 's/Link href="\/"/Link href="editor"/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/layout/JsonCrackLogo.tsx"
-    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/LiveEditor.tsx"
-    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./src/features/editor/views/GraphView/index.tsx"
+    sed -i '/const config =/a \ \ basePath: "\/__YNH_DOMAIN____YNH_SUBDIR_PATH__",' "./apps/www/next.config.js"
+    sed -i 's/\/editor/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/editor"/g' "./apps/www/public/manifest.json"
+    sed -i 's/assets/__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets"/g' "./apps/www/public/manifest.json"
+    sed -i 's/jsoncrack.com/__YNH_DOMAIN____YNH_SUBDIR_PATH__/g' "./apps/www/src/constants/seo.ts"
+    sed -i 's/"\/manifest.json"/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/manifest.json"/g' "./apps/www/src/constants/seo.ts"
+    sed -i 's/"\/favicon.ico"/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/favicon.ico"/g' "./apps/www/src/constants/seo.ts"
+    sed -i 's/Link href="\/"/Link href="editor"/g' "./apps/www/src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./apps/www/src/layout/JsonCrackLogo.tsx"
+    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./apps/www/src/features/editor/LiveEditor.tsx"
+    sed -i 's/"\/assets/"__YNH_DOMAIN____YNH_SUBDIR_PATH__\/assets/g' "./apps/www/src/features/editor/views/GraphView/index.tsx"
 
     # Adapt text for YNH context
-    sed -i 's/jsoncrack.com/JSON_graph/g' "./src/features/modals/DownloadModal/index.tsx"                      # Default download filename
-    sed -i '/already notified/d' "./src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled
-    sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled
+    sed -i 's/jsoncrack.com/JSON_graph/g' "./apps/www/src/features/modals/DownloadModal/index.tsx"                      # Default download filename
+    sed -i '/already notified/d' "./apps/www/src/pages/_error.tsx"                                                      # Delete deceptive speech now Sentry is going to be disabled
+    sed -i 's/Don&apos;t worry, our development team was/Try refreshing the page./g' "./apps/www/src/pages/_error.tsx"  # Delete deceptive speech now Sentry is going to be disabled
     
     # Remove Google Analytics (user tracking)
-    sed -i '/NEXT_PUBLIC_GA_MEASUREMENT_ID/d' "./.env"
-    sed -i '/nextjs-google-analytics/d' "./package.json"
-    sed -i '/GoogleAnalytics/d' "./src/pages/_app.tsx"
-    sed -Ei '/IS_PROD/,+1 d' "./src/pages/_app.tsx"
-    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./src/features/editor/Toolbar/ToolsMenu.tsx"         # Delete part of line containing 'gaEvent'
-    sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./src/features/editor/Toolbar/ViewMenu.tsx"           # Delete part of line containing 'gaEvent'
-    sed -i '/gaEvent("toggle_expand_collapse", {/,/});/d' "./src/features/editor/views/GraphView/OptionsMenu.tsx"   # Delete part of line containing 'gaEvent' (full block to avoid compilation error)
-    gaEvent_list=$(grep -rl 'gaEvent' "./src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                    # Delete complete lines containing 'gaEvent' for files located in src/*
+    sed -i '/NEXT_PUBLIC_GA_MEASUREMENT_ID/d' "./apps/www/.env"
+    sed -i '/nextjs-google-analytics/d' "./apps/www/package.json"
+    sed -i '/GoogleAnalytics/d' "./apps/www/src/pages/_app.tsx"
+    sed -Ei '/IS_PROD/,+1 d' "./apps/www/src/pages/_app.tsx"
+    sed -i 's/ onClick={() => gaEvent("show_tools_menu")}//g' "./apps/www/src/features/editor/Toolbar/ToolsMenu.tsx"         # Delete part of line containing 'gaEvent'
+    sed -i 's/ onClick={() => gaEvent("show_view_menu")}//g' "./apps/www/src/features/editor/Toolbar/ViewMenu.tsx"           # Delete part of line containing 'gaEvent'
+    sed -i '/gaEvent("toggle_expand_collapse", {/,/});/d' "./apps/www/src/features/editor/views/GraphView/OptionsMenu.tsx"   # Delete part of line containing 'gaEvent' (full block to avoid compilation error)
+    gaEvent_list=$(grep -rl 'gaEvent' "./apps/www/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                    # Delete complete lines containing 'gaEvent' for files located in src/*
 
     # Update domain name in SEO tags
-    sed -i 's@https://jsoncrack\.com/editor@__YNH_DOMAIN____YNH_SUBDIR_PATH__@' "./src/pages/editor.tsx" 			# Replace full link as nginx.conf points home to '/editor'
+    sed -i 's@https://jsoncrack\.com/editor@__YNH_DOMAIN____YNH_SUBDIR_PATH__@' "./apps/www/src/pages/editor.tsx" 			# Replace full link as nginx.conf points home to '/editor'
 }
 
 function ynh_build_instructions {
     #=================================================
     # BUILD INSTRUCTIONS (REQUIRED)
     #=================================================
-    corepack enable pnpm && corepack prepare pnpm@10.10.0 --activate && pnpm install --no-frozen-lockfile
+    corepack enable pnpm && corepack prepare pnpm@10.20.0 --activate && pnpm install --no-frozen-lockfile
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
+    COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec turbo telemetry disable
     pnpm run lint:fix
-    pnpm run build
+    pnpm run build:www
 }
 
 #=================================================
