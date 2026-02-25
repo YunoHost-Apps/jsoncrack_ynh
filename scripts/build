@@ -19,7 +19,7 @@ function ynh_manually_defined_package_variables {
     ynh_repo="jsoncrack_ynh"             # YNH repo name - e.g. "jsoncrack_ynh".
     upstream_version_source="manifest"   # "manifest" or "latest", depending on whether you want to build the version defined in the manifest or the latest available version upstream. For most cases, use "manifest".
     upstream_branch_name="main"          # Name of the branch of the upstream repo to get the source from - often "main" or "master".
-    default_build_folder="/apps/www/out" # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
+    default_build_folder="apps/www/out"  # The folder where to find the built files after build - often "dist" for NodeJS (this is generally documented upstream).
     runtime_environment="nodejs"         # Runtime environment that should be installed - currently only "nodejs" or "none" are supported.
     build_nodejs_version=24.10           # NodeJS version to use (if any) for the build.
 
@@ -77,6 +77,7 @@ function ynh_build_instructions {
     #=================================================
     corepack enable pnpm && corepack prepare pnpm@10.20.0 --activate && pnpm install --no-frozen-lockfile
     COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec next telemetry disable
+    COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm exec turbo telemetry disable
     pnpm run lint:fix
     pnpm run build:www
 }
