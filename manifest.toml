@@ -5,7 +5,7 @@ name = "JSON Crack"
 description.en = "Data visualization for JSON, YAML, XML, CSV formats and more"
 description.fr = "Visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
-version = "2026.02.19~ynh1"
+version = "2026.03.21~ynh1"
 
 maintainers = ["oleole39"]
 
@@ -17,7 +17,7 @@ fund = "https://github.com/sponsors/AykutSarac"
 userdoc = "https://jsoncrack.com/docs"
 
 [integration]
-yunohost = ">= 12.0.9"
+yunohost = ">= 12.1.38"
 helpers_version = "2.1"
 architectures = "all"
 multi_instance = true
@@ -47,22 +47,22 @@ ram.runtime = "0M"
 
         [resources.sources.main]
         # This is not used as we are using git clone. It's only here for autoupdate.
-        url = "https://github.com/AykutSarac/jsoncrack.com/archive/e99288b4eff060dcd53428f2a3a5c2f28eecffa6.tar.gz"
-        sha256 = "0009ed28aab25a712fec7d0050f97f73d5ceae094cebb893799b916a1902d7d5"
+        url = "https://github.com/AykutSarac/jsoncrack.com/archive/4b09330af69701147208ec97dba2ec25929db025.tar.gz"
+        sha256 = "84e95c7814ea34fb3c0536bddd7bc635df3d41ecc39168384bfa11d950340edb"
         prefetch = false
         autoupdate.strategy = "latest_github_commit"
 
         [resources.sources.ynh_build]
-        url = "https://github.com/Yunohost-Apps/jsoncrack_ynh/releases/download/v2026.02.19-e99288b4/jsoncrack.com_v2026.02.19-e99288b4_ynh.zip"
-        sha256 = "2c52a47dc14a9671f1b1beec559678811b697f3900954e2352a0e58eb6d772c8"
+        url = "https://github.com/Yunohost-Apps/jsoncrack_ynh/releases/download/v2026.03.21-4b09330a/jsoncrack.com_v2026.03.21-4b09330a_ynh.zip"
+        sha256 = "a81d57561d2b3392455b45c103c0da2d366749bdca6e3429829342f6f1fe4d7e"
         format = "zip"
         extract = true
         in_subdir = true
 
         [resources.sources.monaco_editor]
         # Circumvent CDN - version will have to be bumped manually as per version used upstream (grep 'cdnjs' $install_dir or check upstream's `/src/features/editor/TextEditor.tsx`)
-        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.52.2.tgz"
-        sha256 = "c280cdcf0b0c13d1a2bf01af958d4387ed06d7f6c918401d00c4adcae1bc72b6"
+        url = "https://registry.npmjs.org/monaco-editor/-/monaco-editor-0.55.1.tgz"
+        sha256 = "eec3721fb6b1dc5a0bd1a73e38a5eb5d0c3791af684f7d2571efb90ad8634871"
         extract = true
         in_subdir = true
 
