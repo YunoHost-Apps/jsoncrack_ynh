@@ -37,7 +37,7 @@ ynh_setup_source --dest_dir="$temp_dir" --source_id="monaco_editor"
 mkdir -p "$install_dir/libs/monaco-editor/$monaco_version"
 mv "$temp_dir/min" "$install_dir/libs/monaco-editor/$monaco_version" #keep only `min` folder
 ynh_safe_rm $temp_dir
-grep -rli "https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/$monaco_version/" $install_dir/_next/static/chunks/* | xargs sed -i "s@cdnjs.cloudflare.com/ajax@$domain$path@g"
+grep -rli "https://unpkg.com/monaco-editor@$monaco_version/" $install_dir/_next/static/chunks/* | xargs sed -i "s|unpkg.com/monaco-editor@|$domain$path/libs/monaco-editor/|g"
 
 # Apply permissions
 chown -R "$app:www-data" "$install_dir"
