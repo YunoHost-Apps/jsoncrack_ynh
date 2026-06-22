@@ -5,7 +5,7 @@ name = "JSON Crack"
 description.en = "Data visualization for JSON, YAML, XML, CSV formats and more"
 description.fr = "Visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
-version = "2026.05.15~ynh1"
+version = "2026.06.15~ynh1"
 
 maintainers = ["oleole39"]
 
@@ -47,14 +47,14 @@ ram.runtime = "0M"
 
         [resources.sources.main]
         # This is not used as we are using git clone. It's only here for autoupdate.
-        url = "https://github.com/AykutSarac/jsoncrack.com/archive/f67c540d1af21dba17a1cfa1a91894e58fe075bf.tar.gz"
-        sha256 = "657c73733d73beea43cff298256084bccb7d465e31dc3ce326dcbedd601c4508"
+        url = "https://github.com/AykutSarac/jsoncrack.com/archive/3c9af69e23c635356293b6b28cf4cd0af10d1059.tar.gz"
+        sha256 = "2fd11a7e2612f461596e8313fbdf913c2b82087ae366425229ca5f2a321a2552"
         prefetch = false
         autoupdate.strategy = "latest_github_commit"
 
         [resources.sources.ynh_build]
-        url = "https://github.com/Yunohost-Apps/jsoncrack_ynh/releases/download/v2026.05.15-f67c540d/jsoncrack.com_v2026.05.15-f67c540d_ynh.zip"
-        sha256 = "19b9b9a5add21682d4eabe3ee62c0cf32bef4998cbca022261cfcb20d5f48f5d"
+        url = "https://github.com/Yunohost-Apps/jsoncrack_ynh/releases/download/v2026.06.15-3c9af69e/jsoncrack.com_v2026.06.15-3c9af69e_ynh.zip"
+        sha256 = "d6ce279691ac1a73c50154b7de3eeccfae1c4ace55f9e65ba7b77ea4113b9e59"
         format = "zip"
         extract = true
         in_subdir = true
