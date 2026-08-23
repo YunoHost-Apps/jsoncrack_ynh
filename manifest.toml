@@ -5,7 +5,7 @@ name = "JSON Crack"
 description.en = "Data visualization for JSON, YAML, XML, CSV formats and more"
 description.fr = "Visualisation de données pour les formats JSON, YAML, XML, CSV et autres"
 
-version = "2026.06.15~ynh1"
+version = "2026.08.18~ynh1"
 
 maintainers = ["oleole39"]
 
@@ -47,8 +47,8 @@ ram.runtime = "0M"
 
         [resources.sources.main]
         # This is not used as we are using git clone. It's only here for autoupdate.
-        url = "https://github.com/AykutSarac/jsoncrack.com/archive/3c9af69e23c635356293b6b28cf4cd0af10d1059.tar.gz"
-        sha256 = "2fd11a7e2612f461596e8313fbdf913c2b82087ae366425229ca5f2a321a2552"
+        url = "https://github.com/AykutSarac/jsoncrack.com/archive/b352c0362472553ac83d4f75cc26b748ad64621d.tar.gz"
+        sha256 = "308a5e7c3476582c3a36927e771210f0873b7d313096dfaa3faf78dba5595819"
         prefetch = false
         autoupdate.strategy = "latest_github_commit"
 
