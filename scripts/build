@@ -32,9 +32,11 @@ function ynh_optional_source_customizations {
     # SOURCE CUSTOMIZATION COMMANDS (OPTIONAL)
     #=================================================
     # Remove calls to premium (support encouraged via 'fund' parameter in the manifest.toml)
-    sed -i '/const EditorChoiceModal =/{:Loop;N;/\n\s*);/!bLoop;/EditorChoiceModal/d}'  "./apps/www/src/pages/editor.tsx"                 # Remove call to Premium modal
-    sed -i '/<EditorChoiceModal/d' "./apps/www/src/pages/editor.tsx"                                                                      # Remove call to Premium modal
+    #~ sed -i '/const EditorChoiceModal =/{:Loop;N;/\n\s*);/!bLoop;/EditorChoiceModal/d}'  "./apps/www/src/pages/editor.tsx"                 # Remove call to Premium modal
+    #~ sed -i '/<EditorChoiceModal/d' "./apps/www/src/pages/editor.tsx"                                                                      # Remove call to Premium modal
     sed -i '/process\.env\.NEXT/{:Loop;N;/\n\s*)}/!bLoop;/Upgrade to Pro/d}' "./apps/www/src/features/editor/Toolbar/index.tsx"           # Remove call to Premium (removes block delimited with START='{process.env.NEXT' and END=')}' which contains TARGET='Upgrade to Pro').
+    sed -i '/OpenInToDiagram/d' "./apps/www/src/features/editor/views/GraphView/index.tsx"                                                # Remove call to Premium modal
+    sed -i '/<Button/{:Loop;N;/\n\s*<\/Button>/!bLoop;/ToDiagram/d}' "./apps/www/src/features/modals/NodeModal/index.tsx"                 # Remove call to Premium button
     sed -i '/FaChrome/d' "./apps/www/src/features/editor/Toolbar/index.tsx"                                                               # Remove ad for Chrome extension
     sed -i '/<Link/{:Loop;N;/\n\s*</Link>/!bLoop;/chromewebstore.google.com/d}' "./apps/www/src/features/editor/Toolbar/index.tsx"        # Remove ad for Chrome extension (removes block delimited with START='<Link' and END='</Link>' which contains TARGET='chromewebstore.google.com').
     sed -i '/<Text c="dimmed">/{:Loop;N;/\n\s*<\/Anchor>/!bLoop;/ToDiagram/d}' "./apps/www/src/features/editor/ExternalMode.tsx"          # Remove call to Premium (removes block delimited with START='<Text c="dimmed">' and END='</Anchor>' which contains TARGET='ToDiagram'. We leave the mention of ToDiagram in the FAQ).
@@ -72,7 +74,7 @@ function ynh_optional_source_customizations {
     gaEvent_list=$(grep -rl 'gaEvent' "./apps/www/src") && echo $gaEvent_list | xargs sed -i '/gaEvent/d'                    # Delete complete lines containing 'gaEvent' for files located in src/*
 
     # Update domain name in SEO tags
-    sed -i 's@https://jsoncrack\.com/editor@__YNH_DOMAIN____YNH_SUBDIR_PATH__@' "./apps/www/src/pages/editor.tsx" 			# Replace full link as nginx.conf points home to '/editor'
+    sed -i 's@https://jsoncrack\.com/editor@__YNH_DOMAIN____YNH_SUBDIR_PATH__@' "./apps/www/src/pages/editor.tsx"           # Replace full link as nginx.conf points home to '/editor'
 }
 
 function ynh_build_instructions {
